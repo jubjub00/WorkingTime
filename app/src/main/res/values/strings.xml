@@ -1,0 +1,113 @@
+<resources>
+    <string name="app_name">WorkingTime@WFH</string>
+    <string name="imgmain">TODO</string>
+    <string name="working1">ระบบลงเวลาเข้า-ออกงาน</string>
+    <string name="jiant_blue">สำหรับพนักงานร้าน Jiant Blue</string>
+    <string name="enter_username">Enter Username</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="login">LOGIN</string>
+    <string name="imguser">TODO</string>
+    <string name="title_activity_menu_user">MenuUser</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">History Working</string>
+    <string name="menu_slideshow">ghgh</string>
+    <string name="menu_tools">Tools</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_send">Send</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="nav_addstaff">nav_addstaff</string>
+    <string name="test">ADDSTAFF</string>
+    <string name="addstaff">AddStaff</string>
+    <string name="deswork">ประวัติการทำงาน</string>
+    <string name="editresume">แก้ไขข้อมูลส่วนตัว</string>
+    <string name="editpass">เปลี่ยนรหัสผ่าน</string>
+    <string name="ประวัติการทำงาน">ประวัติการทำงาน</string>
+    <string name="แก้ไขข้อมูลส่วนตัว">แก้ไขข้อมูลส่วนตัว</string>
+    <string name="เปลี่ยนรัสผ่าน">เปลี่ยนรหัสผ่าน</string>
+    <string name="forget">ลืมรหัสผ่าน</string>
+    <string name="title_activity_working_list">WorkingList</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="เพิ่มงาน">เพิ่มงาน</string>
+    <string name="ดูงานวันนี้">ดูงานวันนี้</string>
+    <string name="dashborad">Dashborad</string>
+    <string name="notification">notification</string>
+    <string name="เปิดจีพีเอส">กรุณาเปิด GPS ก่อนเพิ่มรายละเอียดงาน</string>
+    <string name="หัวข้องาน">หัวข้องาน</string>
+    <string name="สถานที่">สถานที่</string>
+    <string name="รายละเอียด">รายละเอียด</string>
+    <string name="ใส่ชื่อหัวข้องาน">ใส่ชื่อหัวงานของคุณที่นี่</string>
+    <string name="ใส่รายละเอียด">ใส่สถานที่ของคุณที่นี่</string>
+    <string name="รายลเอียด">ใส่รายละเอียดที่นี่</string>
+    <string name="เพิ่มรูปภาพ">เพิ่มรูปภาพ</string>
+    <string name="savedetail">บันทึก</string>
+    <string name="รหัสผ่านเดิม">รหัสผ่านเดิม</string>
+    <string name="กรุณากรอกรหัสผ่านเก่า">กรุณากรอกรหัสผ่านเก่า</string>
+    <string name="รหัสผ่านใหม่">รหัสผ่านใหม่</string>
+    <string name="กรุณากรอกรหัสผ่านใหม่">กรุณากรอกรหัสผ่านใหม่</string>
+    <string name="ยืนยันรหัส">ยืนยันรหัส</string>
+    <string name="ยืนยันรหัสอีกครั้ง">ยืนยันรหัสอีกครั้ง</string>
+    <string name="เปลี่ยนรหัสผ่าน">เปลี่ยนรหัสผ่าน</string>
+    <string name="SelDate">เลือกวันที่</string>
+    <string name="เพิ่มชื่">ชื่อ</string>
+    <string name="ชื่อ">ชื่อ</string>
+    <string name="นามสกุล">นามสกุล</string>
+    <string name="เบอร์โทรศัพท์">เบอร์โทรศัพท์ เช่น 08xxxxxxxx</string>
+    <string name="ที่อยู่">ที่อยู่</string>
+    <string name="ตำแหน่ง">ตำแหน่ง</string>
+    <string name="เงินเดือน">เงินเดือน</string>
+    <string name="พนักงานประจำ">พนักงานประจำ</string>
+    <string name="สถานะ">สถานะ</string>
+    <string name="พนักงานชั่วคราว">พนักงานชั่วคราว</string>
+    <string name="เลือกรูปภาพ">เลือกรูปภาพ</string>
+    <string name="บันทึกข้อมูล">บันทึกข้อมูล</string>
+    <string name="รูปภาพ">รูปภาพ</string>
+    <string name="pnopyo">ยืนยัน</string>
+    <string name="ยกเลิก">ยกเลิก</string>
+    <string name="title_activity_vacation">ActivityVacation</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="เพศ">เพศ</string>
+    <string name="ชาย">ชาย</string>
+    <string name="หญิง">หญิง</string>
+
+    <string-array name="status">
+
+        <item>โสด</item>
+        <item>แต่งงาน</item>
+        <item>หม้าย</item>
+        <item>หย่าร้าง</item>
+    </string-array>
+
+    <string-array name="religion">
+
+        <item>พุทธ</item>
+        <item>คริสต์</item>
+        <item>อิสลาม</item>
+        <item>ไม่นับถือศานา</item>
+        <item>อื่นๆ</item>
+    </string-array>
+
+    <string-array name="education">
+
+        <item>ประถมศึกษา</item>
+        <item>มัธยมศึกษาตอนต้น</item>
+        <item>มัธยมศึกษาตอนปลาย</item>
+        <item>ประกาศนียบัตรวิชาชีพ</item>
+        <item>ประกาศนียบัตรวิชาชีพชั้นสูง</item>
+        <item>ปริญญาตรี</item>
+        <item>ปริญญาโท</item>
+        <item>ปริญญาเอก</item>
+    </string-array>
+
+</resources>

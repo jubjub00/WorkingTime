@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.example.workingtimewfh.ui.user.home.HomeFragment"
+        android:label="เช็คเวลาทำงาน"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/nav_history"
+        android:name="com.example.workingtimewfh.ui.user.history.HistoryFragment"
+        android:label="@string/ประวัติการทำงาน"
+        tools:layout="@layout/fragment_history" />
+
+
+
+    <fragment
+        android:id="@+id/nav_change"
+        android:name="com.example.workingtimewfh.ui.user.change_password.ChangePasswordFragment"
+        android:label="เปลี่ยนรหัสผ่าน"
+        tools:layout="@layout/fragment_change_password" />
+
+
+    <fragment
+        android:id="@+id/nav_leave"
+        android:name="com.example.workingtimewfh.ui.user.leave.LeaveFragment"
+        android:label="ขอลางาน"
+        tools:layout="@layout/activity_vacation" />
+
+</navigation>

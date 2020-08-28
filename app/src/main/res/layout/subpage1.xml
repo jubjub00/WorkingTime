@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ข้อมูลส่วนตัว"
+            android:textColor="#000000"
+            android:textSize="20dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="คำนำหน้าชื่อ"
+            android:layout_marginTop="8dp"
+            android:textColor="#000000"
+            android:textSize="16sp" />
+
+        <Spinner
+            android:id="@+id/addnametitle"
+            android:layout_width="300dp"
+            android:layout_height="35dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/bgwhite" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:errorEnabled="true">
+        <EditText
+            android:id="@+id/addname"
+            android:layout_width="300dp"
+            android:layout_height="35dp"
+            android:autofillHints=""
+            android:background="@drawable/bgwhite"
+            android:ems="10"
+            android:hint="@string/ชื่อ"
+            android:inputType="textPersonName"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            app:errorEnabled="true"
+            app:passwordToggleEnabled="true">
+        <EditText
+            android:id="@+id/addsurname"
+            android:layout_width="300dp"
+            android:layout_height="35dp"
+            android:autofillHints=""
+            android:background="@drawable/bgwhite"
+            android:ems="10"
+            android:hint="@string/นามสกุล"
+            android:inputType="textPersonName"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            app:errorEnabled="true"
+            app:passwordToggleEnabled="true">
+            <EditText
+                android:id="@+id/addname_eng"
+                android:layout_width="300dp"
+                android:layout_height="35dp"
+                android:autofillHints=""
+                android:background="@drawable/bgwhite"
+                android:ems="10"
+                android:hint="ชื่อภาษาอังกฤษ"
+                android:inputType="textPersonName"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            app:errorEnabled="true"
+            app:passwordToggleEnabled="true">
+            <EditText
+                android:id="@+id/addsurname_eng"
+                android:layout_width="300dp"
+                android:layout_height="35dp"
+                android:autofillHints=""
+                android:background="@drawable/bgwhite"
+                android:ems="10"
+                android:hint="นามสกุลภาษาอังกฤษ"
+                android:inputType="textPersonName"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:errorEnabled="true"
+            app:counterEnabled="true"
+            app:counterMaxLength="13">
+        <EditText
+            android:id="@+id/addid"
+            android:layout_width="300dp"
+            android:layout_height="35dp"
+            android:autofillHints=""
+            android:background="@drawable/bgwhite"
+            android:ems="10"
+            android:hint="หมายเลขบัตรประชาชน"
+            android:inputType="numberSigned"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:errorEnabled="true"
+            app:counterEnabled="true"
+            app:counterMaxLength="10">
+        <EditText
+            android:id="@+id/addtel"
+            android:layout_width="300dp"
+            android:layout_height="35dp"
+            android:autofillHints=""
+            android:background="@drawable/bgwhite"
+            android:ems="10"
+            android:hint="เบอร์โทรศัพท์"
+            android:inputType="numberSigned"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ตำแหน่ง"
+            android:layout_marginTop="8dp"
+            android:textColor="#000000"
+            android:textSize="16sp" />
+
+        <Spinner
+            android:id="@+id/addposition"
+            android:layout_width="300dp"
+            android:layout_height="35dp"
+
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/bgwhite" />
+        <TextView
+            android:id="@+id/textdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="วัน เดือน ปีเกิด"
+            android:layout_marginTop="8dp"
+            android:textColor="#000000"
+            android:textSize="16sp" />
+        <Button
+            android:id="@+id/select_birthday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="เลือกวันที่เกิด"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:errorEnabled="true"
+            app:passwordToggleEnabled="true">
+        <EditText
+            android:id="@+id/addsalary"
+            android:layout_width="300dp"
+            android:layout_height="35dp"
+            android:autofillHints=""
+            android:background="@drawable/bgwhite"
+            android:ems="10"
+            android:hint="@string/เงินเดือน"
+            android:inputType="numberSigned|number"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/textstatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="สถานภาพ"
+                android:layout_marginTop="8dp"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="300dp"
+                android:layout_height="35dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/bgwhite" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:errorEnabled="true"
+            app:passwordToggleEnabled="true">
+        <EditText
+            android:id="@+id/addnationality"
+            android:layout_width="300dp"
+            android:layout_height="35dp"
+            android:autofillHints=""
+            android:background="@drawable/bgwhite"
+            android:ems="10"
+            android:hint="สัญชาติ"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:errorEnabled="true"
+            app:passwordToggleEnabled="true">
+        <EditText
+            android:id="@+id/addrace"
+            android:layout_width="300dp"
+            android:layout_height="35dp"
+            android:autofillHints=""
+            android:background="@drawable/bgwhite"
+            android:ems="10"
+            android:hint="เชื้อชาติ"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/textreligion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ศาสนา"
+            android:textColor="#000000"
+            android:textSize="16sp" />
+
+        <Spinner
+            android:id="@+id/spinner2"
+            android:layout_width="300dp"
+            android:layout_height="35dp"
+            android:background="@drawable/bgwhite" />
+
+        <TableRow
+            android:layout_width="232dp"
+            android:layout_height="wrap_content">
+
+            <RadioGroup
+                android:id="@+id/radioGroup2"
+                android:layout_width="246dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp">
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:errorEnabled="true"
+                    app:passwordToggleEnabled="true">
+                    <TextView
+                        android:id="@+id/addsex"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="เพศ"
+                        android:textColor="#000000"
+                        android:textSize="16sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <RadioButton
+                    android:id="@+id/male"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ชาย" />
+
+                <RadioButton
+                    android:id="@+id/female"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/หญิง" />
+
+
+            </RadioGroup>
+
+        </TableRow>
+
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+
+            <RadioGroup
+                android:id="@+id/radioGroup"
+                android:layout_width="222dp"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:errorEnabled="true"
+                    app:passwordToggleEnabled="true">
+                    <TextView
+                        android:id="@+id/addstatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/สถานะ"
+                        android:textColor="#000000"
+                        android:textSize="16sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <RadioButton
+                    android:id="@+id/addworker"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/พนักงานประจำ"
+                    android:textSize="16sp" />
+
+                <RadioButton
+                    android:id="@+id/addparttime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/พนักงานชั่วคราว"
+                    android:textSize="16sp" />
+            </RadioGroup>
+
+        </TableRow>
+
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/addphoto"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginTop="115dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/ic_menu_camera" />
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/ViewPagerImage"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+
+                android:layout_marginTop="16dp" />
+
+            <Button
+                android:id="@+id/addphotophone"
+                android:layout_width="72dp"
+                android:layout_height="27dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="115dp"
+                android:background="@drawable/dark"
+                android:text="@string/เลือกรูปภาพ" />
+
+        </TableRow>
+
+
+
+        <ProgressBar
+            android:id="@+id/progressBar2"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible" />
+
+    </LinearLayout>
+</ScrollView>
+

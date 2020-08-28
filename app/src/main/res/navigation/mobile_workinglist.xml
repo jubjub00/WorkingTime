@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_workinglist"
+    app:startDestination="@+id/nav_home_workinglist"
+    tools:ignore="UnusedNavigation">
+
+    <fragment
+        android:id="@+id/nav_home_workinglist"
+        android:name="com.example.workingtimewfh.ui.user.workinglist.home.HomeFragment"
+        android:label="@string/เพิ่มงาน"
+        tools:layout="@layout/fragment_home_workinglist" />
+
+    <fragment
+        android:id="@+id/nav_view_workinglist"
+        android:name="com.example.workingtimewfh.ui.user.workinglist.dashboard.DashboardFragment"
+        android:label="ดูงานวันนี้"
+        tools:layout="@layout/fragment_dashboard" />
+
+</navigation>

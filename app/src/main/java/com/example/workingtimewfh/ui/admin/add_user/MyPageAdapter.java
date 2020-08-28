@@ -1,0 +1,40 @@
+package com.example.workingtimewfh.ui.admin.add_user;
+
+
+import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+
+import java.util.concurrent.BlockingQueue;
+
+public class MyPageAdapter extends FragmentPagerAdapter {
+
+
+
+
+    public MyPageAdapter(FragmentManager fm) {
+        super(fm);
+
+    }
+    @NonNull
+    @Override
+    public Fragment getItem(int position) {
+        if(position == 0)return  SubPage1.newInstance();
+        else if(position == 1) return  SubPage2.newInstance();
+        else if(position == 2) return  SubPage3.newInstance();
+        else if(position == 3) return  SubPage4.newInstance();
+        return null;
+    }
+
+    @Override
+    public int getCount() {
+        return 4;
+    }
+
+
+}

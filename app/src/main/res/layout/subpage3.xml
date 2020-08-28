@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="16dp"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ประวัติการศึกษา"
+            android:textColor="#000000"
+            android:textSize="20dp" />
+        <TextView
+            android:id="@+id/texteducate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ระดับการศึกษา"
+            android:textColor="#000000"
+            android:textSize="16sp" />
+
+        <Spinner
+            android:id="@+id/educateLevel"
+            android:layout_width="300dp"
+            android:layout_height="35dp"
+            android:background="@drawable/bgwhite" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:errorEnabled="true"
+            app:passwordToggleEnabled="true">
+            <EditText
+                android:id="@+id/addschool"
+                android:layout_width="300dp"
+                android:layout_height="35dp"
+                android:background="@drawable/bgwhite"
+                android:ems="10"
+                android:hint="โรงเรียน"
+                android:inputType="textPersonName"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:errorEnabled="true"
+            app:passwordToggleEnabled="true">
+            <EditText
+                android:id="@+id/year"
+                android:layout_width="300dp"
+                android:layout_height="35dp"
+                android:background="@drawable/bgwhite"
+                android:ems="10"
+                android:hint="ปีที่จบ"
+                android:inputType="numberSigned"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:errorEnabled="true"
+
+            app:passwordToggleEnabled="true">
+            <EditText
+                android:id="@+id/gpa"
+                android:layout_width="300dp"
+                android:layout_height="35dp"
+                android:background="@drawable/bgwhite"
+                android:ems="10"
+                android:hint="เกรดเฉลี่ย"
+
+                android:inputType="numberSigned"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/inwork"
+            android:layout_marginTop="8dp"
+            android:text="เพิ่ม"
+            android:layout_marginLeft="250dp"
+            />
+
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/list_education"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+        
+
+
+    </LinearLayout>
+
+
+
+</ScrollView>

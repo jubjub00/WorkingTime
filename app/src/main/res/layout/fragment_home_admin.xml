@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+
+    <SearchView
+        android:id="@+id/search_user"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:queryHint="ค้นหาชื่อพนักงาน"
+        android:searchIcon="@drawable/ic_search_black_24dp">
+
+    </SearchView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/RecycleUser"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:background="#D3E1F5"
+            tools:listitem="@layout/front_recycle_user"/>
+    </LinearLayout>
+
+
+</LinearLayout>

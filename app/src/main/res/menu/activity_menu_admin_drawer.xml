@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/home_admin"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="หน้าหลัก" />
+        <item
+            android:id="@+id/add_user"
+            android:icon="@drawable/adduser2"
+            android:title="เพิ่มพนักงาน" />
+        <item
+            android:id="@+id/nav_edit"
+            android:icon="@drawable/calendar2"
+            android:title="อนุมัติการลา" />
+
+
+    </group>
+
+</menu>

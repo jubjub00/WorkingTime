@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_home_workinglist"
+        android:icon="@android:drawable/ic_input_add"
+        android:title="@string/เพิ่มงาน" />
+
+    <item
+        android:id="@+id/nav_view_workinglist"
+        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:title="@string/ดูงานวันนี้" />
+
+</menu>
