@@ -45,9 +45,10 @@
 
             <Button
                 android:id="@+id/delete"
-                android:layout_width="50dp"
-                android:layout_height="40dp"
-                android:text="ลบ" />
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/ic_delete_black_24dp"
+                 />
         </TableRow>
     </LinearLayout>
 </androidx.cardview.widget.CardView>
