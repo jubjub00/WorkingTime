@@ -47,4 +47,8 @@ public class subDatapage3 {
         this.year = year;
         this.grade = grade;
     }
+
+    public void c(String t){
+        this.Level = t;
+    }
 }

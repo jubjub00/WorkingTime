@@ -1,5 +1,6 @@
 package com.example.workingtimewfh.ui.admin.add_user;
 
+import android.icu.text.Transliterator;
 import android.os.Bundle;
 import android.view.LayoutInflater; import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.workingtimewfh.R;
 
+import java.nio.file.attribute.PosixFileAttributes;
 import java.util.ArrayList;
 
 public class SubPage3 extends Fragment implements AdapterView.OnItemSelectedListener {
@@ -26,15 +28,19 @@ public class SubPage3 extends Fragment implements AdapterView.OnItemSelectedList
     RecyclerView Result_education;
     ArrayList<subDatapage3> item_all = new ArrayList<>();
     ArrayList<Integer> seq_level = new ArrayList<>();
+
     int seq;
     String level;
     Button add;
+
 
     public static SubPage3 newInstance() {
         SubPage3 fragment = new SubPage3();
         return fragment;
     }
     public SubPage3() { }
+
+
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.subpage3, container, false);
@@ -50,6 +56,13 @@ public class SubPage3 extends Fragment implements AdapterView.OnItemSelectedList
         add = rootView.findViewById(R.id.button3);
 
         sub3Adapter = new Sub3Adapter(item_all);
+        sub3Adapter.setOnClickListener(new Sub3Adapter.OnItemClickListener() {
+            @Override
+            public void OnItemClick(int position) {
+                removeItem(position);
+            }
+        });
+
         Result_education.setLayoutManager(new LinearLayoutManager(getActivity()));
         Result_education.setAdapter(sub3Adapter);
 
@@ -98,14 +111,22 @@ public class SubPage3 extends Fragment implements AdapterView.OnItemSelectedList
                         }
                     }
                 }
-                sub3Adapter = new Sub3Adapter(item_all);
+                sub3Adapter.notifyDataSetChanged();
+                /*sub3Adapter = new Sub3Adapter(item_all);
+
                 Result_education.setLayoutManager(new LinearLayoutManager(getActivity()));
-                Result_education.setAdapter(sub3Adapter);
+                Result_education.setAdapter(sub3Adapter);*/
+
             }
         });
 
 
         return rootView;
+    }
+
+    public void removeItem(int position){
+        item_all.remove(position);
+        sub3Adapter.notifyItemChanged(position);
     }
 
     @Override
@@ -119,56 +140,12 @@ public class SubPage3 extends Fragment implements AdapterView.OnItemSelectedList
     }
 
 
-    private class Sub3Adapter extends  RecyclerView.Adapter<ViewHolder>{
-        ArrayList<subDatapage3> item;
-        public Sub3Adapter(ArrayList<subDatapage3> item) {
-            this.item = item;
-        }
-
-        @NonNull
-        @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-            View view = layoutInflater.inflate(R.layout.subpage3_sub,parent,false);
-            return new ViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            subDatapage3 a = item.get(position);
-            holder.education_level.setText(a.getLevel());
-            holder.education_name.setText(a.getName());
-            holder.education_year.setText(""+a.getYear());
-            holder.education_grade.setText(""+a.getGrade());
-        }
-
-        @Override
-        public int getItemCount() {
-            return item.size();
-        }
-    }
-
-    private class ViewHolder extends RecyclerView.ViewHolder {
-        TextView education_level;
-        TextView education_name;
-        TextView education_year;
-        TextView education_grade;
-
-        public ViewHolder(@NonNull final View itemView) {
-            super(itemView);
-            education_level = itemView.findViewById(R.id.education_level);
-            education_name = itemView.findViewById(R.id.education_name);
-            education_year = itemView.findViewById(R.id.education_year);
-            education_grade = itemView.findViewById(R.id.education_grade);
-
-            ((Button)itemView.findViewById(R.id.delete)).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(getActivity(),"asdf"+itemView.getParent(),Toast.LENGTH_SHORT).show();
-                }
-            });
 
 
-        }
-    }
+
+
+
+
+
+
 }

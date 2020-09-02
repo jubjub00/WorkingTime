@@ -48,12 +48,7 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
     public void onBindViewHolder(@NonNull SliderViewHolder holder, int position) {
 
         holder.setImage(sliderItems.get(position));
-        holder.imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });
     }
 
 
