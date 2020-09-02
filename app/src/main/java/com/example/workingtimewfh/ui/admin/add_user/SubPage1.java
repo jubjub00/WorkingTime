@@ -2,8 +2,11 @@ package com.example.workingtimewfh.ui.admin.add_user;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.DataSetObserver;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.InputFilter;
 import android.view.KeyEvent;
 import android.view.LayoutInflater; import android.view.View;
@@ -11,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -20,20 +24,29 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.workingtimewfh.R;
+import com.example.workingtimewfh.img_slide.SliderAdapter;
+import com.example.workingtimewfh.img_slide.SliderItem;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedListener {
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
 
+public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedListener {
+    private ViewPager2 viewPager2;
+    List<Bitmap> BitmapImage;
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     View rootView;
     int NameTitle = 0,Position = 0,reli = 0;
+    Button cam;
 
 
     public static SubPage1 newInstance() {
@@ -52,6 +65,18 @@ public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedList
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
+
+        viewPager2 = rootView.findViewById(R.id.ViewPagerImage);
+        BitmapImage = new ArrayList<>();
+
+        cam = rootView.findViewById(R.id.addphoto);
+        cam.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent cam = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cam,1);
+            }
+        });
 
         CreateNameTitle();
         CreatePosition();
@@ -91,6 +116,32 @@ public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedList
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                Bitmap bp = (Bitmap) data.getExtras().get("data");
+                BitmapImage.add(bp);
+
+
+
+                List<SliderItem> sliderItems = new ArrayList<>();
+                for (Bitmap x: BitmapImage) {
+                    sliderItems.add(new SliderItem(x));
+                }
+                SliderAdapter a = new SliderAdapter(sliderItems, viewPager2);
+
+                viewPager2.setAdapter(a);
+                viewPager2.setPageTransformer(new ZoomOutPageTransformer());
+
+            } else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(getActivity(), "Can celled", Toast.LENGTH_LONG).show();
+            }
+
+
+        }
     }
 
     public void valid(String a, ViewPager pager){
@@ -320,5 +371,41 @@ public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedList
         });
 
 
+    }
+
+    public class ZoomOutPageTransformer implements ViewPager2.PageTransformer {
+        private static final float MIN_SCALE = 0.85f;
+        private static final float MIN_ALPHA = 0.5f;
+
+        public void transformPage(View view, float position) {
+            int pageWidth = view.getWidth();
+            int pageHeight = view.getHeight();
+
+            if (position < -1) {
+                view.setAlpha(0f);
+
+            } else if (position <= 1) {
+                float scaleFactor = Math.max(MIN_SCALE, 1 - Math.abs(position));
+                float vertMargin = pageHeight * (1 - scaleFactor) / 2;
+                float horzMargin = pageWidth * (1 - scaleFactor) / 2;
+                if (position < 0) {
+                    view.setTranslationX(horzMargin - vertMargin / 2);
+                } else {
+                    view.setTranslationX(-horzMargin + vertMargin / 2);
+                }
+
+
+                view.setScaleX(scaleFactor);
+                view.setScaleY(scaleFactor);
+
+
+                view.setAlpha(MIN_ALPHA +
+                        (scaleFactor - MIN_SCALE) /
+                                (1 - MIN_SCALE) * (1 - MIN_ALPHA));
+
+            } else {
+                view.setAlpha(0f);
+            }
+        }
     }
 }

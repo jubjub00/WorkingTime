@@ -1,11 +1,13 @@
 package com.example.workingtimewfh.img_slide;
 
+import android.app.AlertDialog;
 import android.app.slice.SliceItem;
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -44,8 +46,6 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
     }
 
 
-
-
     @Override
     public int getItemCount() {
         return sliderItems.size();
@@ -57,6 +57,15 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
         SliderViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.ImageSlide);
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+
+
+                    Log.d("aaaaaaaaaaaaaaaaaaaaaaaa","kkkkkkkkkkkkkkkkkkkkk"+getAdapterPosition());
+                }
+            });
         }
 
         void setImage(SliderItem sliceItem){
