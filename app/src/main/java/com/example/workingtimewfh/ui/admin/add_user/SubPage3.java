@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -111,11 +112,16 @@ public class SubPage3 extends Fragment implements AdapterView.OnItemSelectedList
                         }
                     }
                 }
-                sub3Adapter.notifyDataSetChanged();
-                /*sub3Adapter = new Sub3Adapter(item_all);
 
+                sub3Adapter = new Sub3Adapter(item_all);
+                sub3Adapter.setOnClickListener(new Sub3Adapter.OnItemClickListener() {
+                    @Override
+                    public void OnItemClick(int position) {
+                        removeItem(position);
+                    }
+                });
                 Result_education.setLayoutManager(new LinearLayoutManager(getActivity()));
-                Result_education.setAdapter(sub3Adapter);*/
+                Result_education.setAdapter(sub3Adapter);
 
             }
         });
@@ -126,7 +132,9 @@ public class SubPage3 extends Fragment implements AdapterView.OnItemSelectedList
 
     public void removeItem(int position){
         item_all.remove(position);
-        sub3Adapter.notifyItemChanged(position);
+        seq_level.remove(position);
+        sub3Adapter.notifyItemRemoved(position);
+
     }
 
     @Override

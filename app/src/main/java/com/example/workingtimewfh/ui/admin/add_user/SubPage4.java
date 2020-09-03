@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,7 +26,7 @@ public class SubPage4 extends Fragment implements DatePickerDialog.OnDateSetList
 
     ArrayList<subDatapage4> experience= new ArrayList<>();
     RecyclerView ShowResult;
-    Subpage4Adapter subpage4Adapter;
+    Sub4Adapter subpage4Adapter;
     Button add,add_start,add_end;
     int selected=0;
     Date StartDay=null,EndDay=null;
@@ -54,13 +53,25 @@ public class SubPage4 extends Fragment implements DatePickerDialog.OnDateSetList
         add_end.setOnClickListener(this);
 
 
-        subpage4Adapter = new Subpage4Adapter(experience);
+        subpage4Adapter = new Sub4Adapter(experience);
         ShowResult.setLayoutManager(new LinearLayoutManager(getActivity()));
+        subpage4Adapter.setOnClickListener(new Sub4Adapter.OnItemClickListener() {
+            @Override
+            public void OnItemClick(int position) {
+                removeItem(position);
+            }
+        });
         ShowResult.setAdapter(subpage4Adapter);
 
 
 
         return rootView;
+    }
+
+    public void removeItem(int position){
+        experience.remove(position);
+        subpage4Adapter.notifyItemRemoved(position);
+
     }
 
     @Override
@@ -96,8 +107,14 @@ public class SubPage4 extends Fragment implements DatePickerDialog.OnDateSetList
 
                         if(!company.isEmpty()&&!pos.isEmpty()&&!s.isEmpty()&&!e.isEmpty()){
                             experience.add(new subDatapage4(company,pos,s,e));
-                            subpage4Adapter = new Subpage4Adapter(experience);
+                            subpage4Adapter = new Sub4Adapter(experience);
                             ShowResult.setLayoutManager(new LinearLayoutManager(getActivity()));
+                            subpage4Adapter.setOnClickListener(new Sub4Adapter.OnItemClickListener() {
+                                @Override
+                                public void OnItemClick(int position) {
+                                    removeItem(position);
+                                }
+                            });
                             ShowResult.setAdapter(subpage4Adapter);
 
                             ((EditText)rootView.findViewById(R.id.addlocation)).setText(null);
@@ -155,52 +172,5 @@ public class SubPage4 extends Fragment implements DatePickerDialog.OnDateSetList
     }
 
 
-    private class Subpage4Adapter extends RecyclerView.Adapter<ViewHolder>{
-        private ArrayList<subDatapage4> experience;
-        public Subpage4Adapter(ArrayList<subDatapage4> experience) {
-            this.experience = experience;
-        }
 
-        @NonNull
-        @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-            View view = layoutInflater.inflate(R.layout.subpage4_sub,parent,false);
-            return new ViewHolder(view);
-
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            holder.company.setText(experience.get(position).getCompany());
-            holder.position.setText(experience.get(position).getPosition());
-            holder.start_work.setText(experience.get(position).getStart());
-            holder.end_work.setText(experience.get(position).getEnd());
-        }
-
-
-
-        @Override
-        public int getItemCount() {
-            return experience.size();
-        }
-    }
-
-    private class ViewHolder extends RecyclerView.ViewHolder {
-        TextView company;
-        TextView position;
-        TextView start_work;
-        TextView end_work;
-
-
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            company = itemView.findViewById(R.id.company);
-            position = itemView.findViewById(R.id.position);
-            start_work = itemView.findViewById(R.id.start_work);
-            end_work = itemView.findViewById(R.id.end_work);
-
-
-        }
-    }
 }
