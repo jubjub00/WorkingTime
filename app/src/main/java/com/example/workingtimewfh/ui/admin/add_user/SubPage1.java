@@ -41,7 +41,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedListener {
     private ViewPager2 viewPager2;
-    List<Bitmap> BitmapImage;
+    List<Bitmap> BitmapImage = new ArrayList<>();;
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     View rootView;
@@ -55,6 +55,9 @@ public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedList
         return fragment;
     }
     public SubPage1() { }
+    public int s(){
+        return 0;
+    }
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -67,7 +70,7 @@ public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedList
         spinner.setOnItemSelectedListener(this);
 
         viewPager2 = rootView.findViewById(R.id.ViewPagerImage);
-        BitmapImage = new ArrayList<>();
+
 
         cam = rootView.findViewById(R.id.addphoto);
         cam.setOnClickListener(new View.OnClickListener() {
@@ -81,6 +84,22 @@ public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedList
         CreateNameTitle();
         CreatePosition();
         CreateReligion();
+
+
+
+        if(!BitmapImage.isEmpty()){
+            List<SliderItem> sliderItems = new ArrayList<>();
+            for (Bitmap x: BitmapImage) {
+                sliderItems.add(new SliderItem(x));
+            }
+            SliderAdapter a = new SliderAdapter(sliderItems, viewPager2);
+
+            viewPager2.setAdapter(a);
+            viewPager2.setPageTransformer(new ZoomOutPageTransformer());
+        }
+
+
+
 
         EditText ID = rootView.findViewById(R.id.addid);
         ID.setOnKeyListener(new View.OnKeyListener() {

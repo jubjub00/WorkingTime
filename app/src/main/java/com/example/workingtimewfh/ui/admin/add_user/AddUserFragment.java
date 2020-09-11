@@ -3,15 +3,18 @@ package com.example.workingtimewfh.ui.admin.add_user;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -35,7 +38,7 @@ public class AddUserFragment extends Fragment  implements ViewPager.OnPageChange
     private AddUserViewModel AddUserViewModel;
     Button submit,cancel;
     String Vstatus,Vgender;
-    View root;
+    View root,s1;
 
     List<Bitmap> BitmapImage;
     StorageReference storageRef = FirebaseStorage.getInstance().getReference();
@@ -51,12 +54,14 @@ public class AddUserFragment extends Fragment  implements ViewPager.OnPageChange
     SubPage1  sb1;
     Fragment sub11;
     int getCurrent_position = 0;
-
+    private ScrollView parentScroll;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         AddUserViewModel = ViewModelProviders.of(this).get(AddUserViewModel.class);
         root = inflater.inflate(R.layout.fragment_add_user, container, false);
+        s1 = inflater.inflate(R.layout.subpage1, container, false);
+
 
         submit = root.findViewById(R.id.save);
         cancel = root.findViewById(R.id.cancel);
@@ -69,6 +74,9 @@ public class AddUserFragment extends Fragment  implements ViewPager.OnPageChange
         pager =  root.findViewById(R.id.pager);
         pager.setAdapter(adapter);
         pager.addOnPageChangeListener(this);
+
+
+
 
 
 
@@ -253,26 +261,19 @@ public class AddUserFragment extends Fragment  implements ViewPager.OnPageChange
     }
     public void setButton(){
         if(getCurrent_position == 0){
-            submit.setText("ถัดไป");
+            submit.setBackground(ContextCompat.getDrawable(getContext(),R.drawable.ic_arrow_forward_black_24dp));
             cancel.setVisibility(View.INVISIBLE);
         }else if(getCurrent_position == 1 || getCurrent_position == 2){
-            submit.setText("ถัดไป");
-            cancel.setText("ย้อนกลับ");
+            submit.setBackground(ContextCompat.getDrawable(getContext(),R.drawable.ic_arrow_forward_black_24dp));
             cancel.setVisibility(View.VISIBLE);
         }else if(getCurrent_position == 3){
-            submit.setText("บันทึก");
-            cancel.setText("ย้อนกลับ");
+
+            submit.setBackground(ContextCompat.getDrawable(getContext(),R.drawable.ic_save_black_24dp));
             cancel.setVisibility(View.VISIBLE);
         }
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
 
-
-
-    }
 
     @Override
     public void onStop() {

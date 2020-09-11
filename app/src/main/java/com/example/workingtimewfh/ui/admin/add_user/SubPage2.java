@@ -27,6 +27,7 @@ public class SubPage2 extends Fragment {
     ArrayList<String> DISTRICT_NAME = new ArrayList<>();
     ArrayList<String> PROVINCE_NAME = new ArrayList<>();
     ArrayList<String> ZIPCODE = new ArrayList<>();
+    ArrayList<String> All = new ArrayList<>();
 
     public static SubPage2 newInstance() {
         SubPage2 fragment = new SubPage2();
@@ -52,13 +53,15 @@ public class SubPage2 extends Fragment {
                 PROVINCE_NAME.add(userDetail.getString("PROVINCE_NAME"));
                 ZIPCODE.add(userDetail.getString("ZIPCODE"));
 
+                All.add(userDetail.getString("SUB_DISTRICT_NAME")+" ,"+userDetail.getString("DISTRICT_NAME")+" ,"+userDetail.getString("PROVINCE_NAME"));
+
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, SUB_DISTRICT_NAME);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, All);
         final AutoCompleteTextView textView = (AutoCompleteTextView) rootView.findViewById(R.id.addcanton1);
         textView.setAdapter(adapter);
         ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, DISTRICT_NAME);
@@ -74,8 +77,9 @@ public class SubPage2 extends Fragment {
         textView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                int a = SUB_DISTRICT_NAME.indexOf(textView.getText().toString());
+                int a = All.indexOf(textView.getText().toString());
                 //Toast.makeText(getActivity(),"rtrtrtr"+ZIPCODE.get(a),Toast.LENGTH_SHORT).show();
+                textView.setText(SUB_DISTRICT_NAME.get(a));
                 textView2.setText(DISTRICT_NAME.get(a));
                 textView3.setText(PROVINCE_NAME.get(a));
                 textView4.setText(ZIPCODE.get(a));
@@ -84,7 +88,7 @@ public class SubPage2 extends Fragment {
         });
 
 
-        ArrayAdapter<String> adapter11 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, SUB_DISTRICT_NAME);
+        ArrayAdapter<String> adapter11 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, All);
         final AutoCompleteTextView textView11 = (AutoCompleteTextView) rootView.findViewById(R.id.addcanton2);
         textView11.setAdapter(adapter11);
         ArrayAdapter<String> adapter12 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, DISTRICT_NAME);
@@ -100,8 +104,9 @@ public class SubPage2 extends Fragment {
         textView11.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                int a = SUB_DISTRICT_NAME.indexOf(textView11.getText().toString());
+                int a = All.indexOf(textView11.getText().toString());
                 //Toast.makeText(getActivity(),"rtrtrtr"+ZIPCODE.get(a),Toast.LENGTH_SHORT).show();
+                textView11.setText(SUB_DISTRICT_NAME.get(a));
                 textView12.setText(DISTRICT_NAME.get(a));
                 textView13.setText(PROVINCE_NAME.get(a));
                 textView14.setText(ZIPCODE.get(a));
