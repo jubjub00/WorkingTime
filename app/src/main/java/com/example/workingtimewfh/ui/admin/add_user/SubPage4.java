@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater; import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -32,6 +33,7 @@ public class SubPage4 extends Fragment implements DatePickerDialog.OnDateSetList
     Date StartDay=null,EndDay=null;
     String SD=null,ED=null;
     View rootView;
+    CheckBox NoneExperience;
 
 
     public static SubPage4 newInstance() {
@@ -42,7 +44,7 @@ public class SubPage4 extends Fragment implements DatePickerDialog.OnDateSetList
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.subpage4, container, false);
-
+        NoneExperience = rootView.findViewById(R.id.none_experience);
 
         ShowResult = rootView.findViewById(R.id.list_work);
         add = rootView.findViewById(R.id.button3);
@@ -62,6 +64,23 @@ public class SubPage4 extends Fragment implements DatePickerDialog.OnDateSetList
             }
         });
         ShowResult.setAdapter(subpage4Adapter);
+
+
+        NoneExperience.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean checked = ((CheckBox) NoneExperience).isChecked();
+                if(checked){
+                    ((Button)rootView.findViewById(R.id.button3)).setEnabled(false);
+                    while(!experience.isEmpty())
+                        removeItem(0);
+
+
+                }else {
+                    ((Button)rootView.findViewById(R.id.button3)).setEnabled(true);
+                }
+            }
+        });
 
 
 

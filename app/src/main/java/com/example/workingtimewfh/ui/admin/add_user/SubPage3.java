@@ -1,12 +1,16 @@
 package com.example.workingtimewfh.ui.admin.add_user;
 
+import android.icu.text.DecimalFormat;
 import android.icu.text.Transliterator;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater; import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TabHost;
@@ -22,6 +26,7 @@ import com.example.workingtimewfh.R;
 
 import java.nio.file.attribute.PosixFileAttributes;
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class SubPage3 extends Fragment implements AdapterView.OnItemSelectedListener {
 
@@ -29,6 +34,7 @@ public class SubPage3 extends Fragment implements AdapterView.OnItemSelectedList
     RecyclerView Result_education;
     ArrayList<subDatapage3> item_all = new ArrayList<>();
     ArrayList<Integer> seq_level = new ArrayList<>();
+    CheckBox NoneEducation;
 
     int seq;
     String level;
@@ -45,6 +51,7 @@ public class SubPage3 extends Fragment implements AdapterView.OnItemSelectedList
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.subpage3, container, false);
+        NoneEducation = rootView.findViewById(R.id.none_education);
 
         Spinner spinner = rootView.findViewById(R.id.educateLevel);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getActivity(), R.array.education, android.R.layout.simple_spinner_item);
@@ -127,6 +134,22 @@ public class SubPage3 extends Fragment implements AdapterView.OnItemSelectedList
         });
 
 
+        NoneEducation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean checked = ((CheckBox) NoneEducation).isChecked();
+                if(checked){
+                    ((Button)rootView.findViewById(R.id.button3)).setEnabled(false);
+                    while(!item_all.isEmpty() && !seq_level.isEmpty())
+                        removeItem(0);
+
+
+                }else {
+                    ((Button)rootView.findViewById(R.id.button3)).setEnabled(true);
+                }
+            }
+        });
+
         return rootView;
     }
 
@@ -134,7 +157,6 @@ public class SubPage3 extends Fragment implements AdapterView.OnItemSelectedList
         item_all.remove(position);
         seq_level.remove(position);
         sub3Adapter.notifyItemRemoved(position);
-
     }
 
     @Override

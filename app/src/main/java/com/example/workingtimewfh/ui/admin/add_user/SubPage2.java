@@ -6,10 +6,14 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.workingtimewfh.R;
 
@@ -28,6 +32,8 @@ public class SubPage2 extends Fragment {
     ArrayList<String> PROVINCE_NAME = new ArrayList<>();
     ArrayList<String> ZIPCODE = new ArrayList<>();
     ArrayList<String> All = new ArrayList<>();
+    CheckBox sameLocation;
+    View rootView;
 
     public static SubPage2 newInstance() {
         SubPage2 fragment = new SubPage2();
@@ -36,7 +42,9 @@ public class SubPage2 extends Fragment {
     public SubPage2() { }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.subpage2, container, false);
+        rootView = inflater.inflate(R.layout.subpage2, container, false);
+        sameLocation = rootView.findViewById(R.id.checkBox);
+
 
 
         try {
@@ -60,7 +68,7 @@ public class SubPage2 extends Fragment {
             e.printStackTrace();
         }
 
-
+        final EditText addr = rootView.findViewById(R.id.addaddress1);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, All);
         final AutoCompleteTextView textView = (AutoCompleteTextView) rootView.findViewById(R.id.addcanton1);
         textView.setAdapter(adapter);
@@ -87,7 +95,7 @@ public class SubPage2 extends Fragment {
             }
         });
 
-
+        final EditText addr2 = rootView.findViewById(R.id.addaddress2);
         ArrayAdapter<String> adapter11 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, All);
         final AutoCompleteTextView textView11 = (AutoCompleteTextView) rootView.findViewById(R.id.addcanton2);
         textView11.setAdapter(adapter11);
@@ -115,10 +123,34 @@ public class SubPage2 extends Fragment {
         });
 
 
+        sameLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean checked = ((CheckBox) sameLocation).isChecked();
+                if(checked){
+                    addr2.setText(addr.getText().toString());
+                    textView11.setText(textView.getText().toString());
+                    textView12.setText(textView2.getText().toString());
+                    textView13.setText(textView3.getText().toString());
+                    textView14.setText(textView4.getText().toString());
+                }else {
+                    addr2.setText(null);
+                    textView11.setText(null);
+                    textView12.setText(null);
+                    textView13.setText(null);
+                    textView14.setText(null);
+                }
+            }
+        });
+
+
+
+
 
 
         return rootView;
     }
+
 
 
     public String loadJSONFromAsset() {
@@ -136,6 +168,61 @@ public class SubPage2 extends Fragment {
         }
         return json;
     }
+
+
+    public boolean ValidAll(ViewPager pager) {
+        pager.setCurrentItem(1);
+        if(!ValidPlace1() | !ValidSubPlace1() | !ValidPlace2() | !ValidSubPlace2())return false;
+        return true;
+    }
+
+    boolean ValidPlace1(){
+
+        EditText txt = (EditText) rootView.findViewById(R.id.addaddress1);
+        if(txt.getText().toString().isEmpty()){
+            txt.requestFocus();
+            txt.setError("กรุณากรอกข้อมูล");
+            return false;
+        }
+        return true;
+    }
+
+    boolean ValidSubPlace1(){
+
+        AutoCompleteTextView txt = (AutoCompleteTextView) rootView.findViewById(R.id.addcanton1);
+
+        if(txt.getText().toString().isEmpty()){
+            txt.requestFocus();
+            txt.setError("กรุณากรอกข้อมูล");
+            return false;
+        }
+        return true;
+    }
+
+
+    boolean ValidPlace2(){
+
+        EditText txt = (EditText) rootView.findViewById(R.id.addaddress2);
+        if(txt.getText().toString().isEmpty()){
+            txt.requestFocus();
+            txt.setError("กรุณากรอกข้อมูล");
+            return false;
+        }
+        return true;
+    }
+
+    boolean ValidSubPlace2(){
+
+        AutoCompleteTextView txt = (AutoCompleteTextView) rootView.findViewById(R.id.addcanton2);
+
+        if(txt.getText().toString().isEmpty()){
+            txt.requestFocus();
+            txt.setError("กรุณากรอกข้อมูล");
+            return false;
+        }
+        return true;
+    }
+
 
 
 }

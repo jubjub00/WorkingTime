@@ -71,6 +71,7 @@
             app:errorEnabled="true"
 
             app:passwordToggleEnabled="true">
+
             <EditText
                 android:id="@+id/gpa"
                 android:layout_width="300dp"
@@ -79,25 +80,40 @@
                 android:ems="10"
                 android:hint="เกรดเฉลี่ย"
 
-                android:inputType="numberSigned"
+                android:inputType="numberDecimal"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
 
-        <Button
-            android:id="@+id/button3"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/inwork"
-            android:layout_marginTop="8dp"
-            android:text="เพิ่ม"
-            android:layout_marginLeft="250dp"
-            />
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
 
+            <androidx.constraintlayout.widget.ConstraintLayout>
 
+                <CheckBox
+                    android:id="@+id/none_education"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ไม่มีข้อมูล"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                <androidx.recyclerview.widget.RecyclerView
+                <Button
+                    android:id="@+id/button3"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/inwork"
+                    android:text="เพิ่ม"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </TableRow>
+
+        <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/list_education"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />

@@ -1,13 +1,21 @@
 package com.example.workingtimewfh.ui.admin.add_user;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.icu.text.DecimalFormat;
+import android.location.Geocoder;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
 import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater; import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +23,10 @@ import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,20 +44,25 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
-public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedListener {
+public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedListener,DatePickerDialog.OnDateSetListener {
     private ViewPager2 viewPager2;
-    List<Bitmap> BitmapImage = new ArrayList<>();;
+    List<Bitmap> BitmapImage = new ArrayList<>();
+    Spinner name_title ;
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     View rootView;
     int NameTitle = 0,Position = 0,reli = 0;
-    Button cam;
+    Button cam,birthday,gal;
+    String Value_NameTitle = null,Gender = null,state = null;
+
 
 
     public static SubPage1 newInstance() {
@@ -55,9 +71,6 @@ public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedList
         return fragment;
     }
     public SubPage1() { }
-    public int s(){
-        return 0;
-    }
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -69,7 +82,10 @@ public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedList
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
 
+        name_title = rootView.findViewById(R.id.addnametitle);
+
         viewPager2 = rootView.findViewById(R.id.ViewPagerImage);
+        birthday = rootView.findViewById(R.id.select_birthday);
 
 
         cam = rootView.findViewById(R.id.addphoto);
@@ -80,10 +96,22 @@ public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedList
                 startActivityForResult(cam,1);
             }
         });
+        gal = rootView.findViewById(R.id.addphotophone);
+        gal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent cameraIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                cameraIntent.setType("image/*");
+                startActivityForResult(cameraIntent, 2);
+            }
+        });
 
         CreateNameTitle();
         CreatePosition();
         CreateReligion();
+        CreateSelectGender();
+        CreateSelectStatus();
 
 
 
@@ -123,8 +151,61 @@ public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedList
         });
         Tel.setFilters(new InputFilter[] {new InputFilter.LengthFilter(10)});
 
+        birthday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ShowDatePicker();
+                Button txt = rootView.findViewById(R.id.select_birthday);
+                txt.setError(null);
+            }
+        });
+
+
+        final EditText Salary = rootView.findViewById(R.id.addsalary);
+        Salary.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                Salary.removeTextChangedListener(this);
+
+                try {
+                    String givenstring = s.toString();
+                    int longval;
+                    if (givenstring.contains(",")) {
+                        givenstring = givenstring.replaceAll(",", "");
+                    }
+                    longval = Integer.parseInt(givenstring);
+                    DecimalFormat formatter = new DecimalFormat("#,###,###");
+                    String formattedString = formatter.format(longval);
+                    Salary.setText(formattedString);
+                    Salary.setSelection(Salary.getText().length());
+                    // to place the cursor at the end of text
+                } catch (NumberFormatException nfe) {
+                    nfe.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                Salary.addTextChangedListener(this);
+            }
+        });
+
+
+
         return rootView;
     }
+
+
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -161,14 +242,73 @@ public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedList
 
 
         }
-    }
 
-    public void valid(String a, ViewPager pager){
-        pager.setCurrentItem(0);
-        ((EditText) rootView.findViewById(R.id.addname)).setError(a);
-        ((EditText) rootView.findViewById(R.id.addname)).requestFocus();
-    }
+        if (requestCode == 2 && resultCode == RESULT_OK && null != data) {
 
+
+            Uri returnUri = data.getData();
+            Bitmap bitmapImage = null;
+            try {
+                bitmapImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), returnUri);
+
+                BitmapImage.add(bitmapImage);
+
+                List<SliderItem> sliderItems = new ArrayList<>();
+                for (Bitmap x: BitmapImage) {
+                    sliderItems.add(new SliderItem(x));
+                }
+                SliderAdapter a = new SliderAdapter(sliderItems, viewPager2);
+
+                viewPager2.setAdapter(a);
+                viewPager2.setPageTransformer(new ZoomOutPageTransformer());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+
+    }
+    private void CreateSelectGender() {
+        RadioButton male = rootView.findViewById(R.id.male);
+        RadioButton female = rootView.findViewById(R.id.female);
+        male.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextView txt = rootView.findViewById(R.id.addsex);
+                txt.setError(null);
+                Gender = "ชาย";
+            }
+        });
+        female.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextView txt = rootView.findViewById(R.id.addsex);
+                txt.setError(null);
+                Gender = "หญิง";
+            }
+        });
+    }
+    private void CreateSelectStatus() {
+        RadioButton w = rootView.findViewById(R.id.addworker);
+        RadioButton p = rootView.findViewById(R.id.addparttime);
+        w.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextView txt = rootView.findViewById(R.id.addstatus);
+                txt.setError(null);
+                state = "พนักงานประจำ";
+            }
+        });
+        p.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextView txt = rootView.findViewById(R.id.addstatus);
+                txt.setError(null);
+                state = "พนักงงานชั่วคราว";
+            }
+        });
+    }
     public void CreateNameTitle(){
         db.collection("user").document("extension").get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -176,12 +316,13 @@ public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedList
                 List<String> a = (List<String>) documentSnapshot.getData().get("name_title");
                 final List<String> b = a;
 
-                Spinner name_title = rootView.findViewById(R.id.addnametitle);
+
 
                 ArrayAdapter aa = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item, a);
                 aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 name_title.setAdapter(aa);
                 name_title.setSelection(NameTitle);
+                Value_NameTitle = (String)name_title.getSelectedItem();
                 name_title.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -229,6 +370,7 @@ public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedList
 
                         }else{
                             NameTitle = position;
+                            Value_NameTitle = (String)name_title.getSelectedItem();
                         }
                     }
 
@@ -237,12 +379,13 @@ public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedList
 
                     }
                 });
+
+
             }
         });
 
 
     }
-
     public void CreatePosition(){
         db.collection("user").document("extension").get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -427,4 +570,154 @@ public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedList
             }
         }
     }
+
+    private void ShowDatePicker(){
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                getActivity(),
+                android.R.style.Theme_Holo_Dialog,
+                this,
+                Calendar.getInstance().get(Calendar.YEAR),
+                Calendar.getInstance().get(Calendar.MONTH),
+                Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+        );
+
+        datePickerDialog.show();
+
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+            ((Button) rootView.findViewById(R.id.select_birthday)).setText(dayOfMonth + "/" + (month + 1) + "/" + (year + 543));
+    }
+
+
+
+    boolean ValidAll(ViewPager pager){
+        pager.setCurrentItem(0);
+        if(!ValidName() | !ValidLastName() | !ValidTel() | !ValidSalary() | !ValidNameEng() | !ValidLastNameEng() | !ValidPersonID() | !ValidBirthDay() | !ValidNational() | !ValidRace() | !ValidGender() | !ValidStatus())return false;
+        return true;
+
+    }
+    void ValidPrefix(){
+
+        Toast.makeText(getActivity(),""+Value_NameTitle,Toast.LENGTH_SHORT).show();
+
+    }
+    boolean ValidName(){
+
+        EditText txt = (EditText) rootView.findViewById(R.id.addname);
+        if(txt.getText().toString().isEmpty()){
+            txt.requestFocus();
+            txt.setError("กรุณากรอกข้อมูล");
+            return false;
+        }
+        return true;
+    }
+    boolean ValidLastName(){
+
+        EditText txt = (EditText) rootView.findViewById(R.id.addsurname);
+        if(txt.getText().toString().isEmpty()){
+            txt.requestFocus();
+            txt.setError("กรุณากรอกข้อมูล");
+            return false;
+        }
+        return true;
+    }
+    boolean ValidNameEng(){
+
+        EditText txt = (EditText) rootView.findViewById(R.id.addname_eng);
+        if(txt.getText().toString().isEmpty()){
+            txt.requestFocus();
+            txt.setError("กรุณากรอกข้อมูล");
+            return false;
+        }
+        return true;
+    }
+    boolean ValidLastNameEng(){
+
+        EditText txt = (EditText) rootView.findViewById(R.id.addsurname_eng);
+        if(txt.getText().toString().isEmpty()){
+            txt.requestFocus();
+            txt.setError("กรุณากรอกข้อมูล");
+            return false;
+        }
+        return true;
+    }
+    boolean ValidPersonID(){
+
+        EditText txt = (EditText) rootView.findViewById(R.id.addid);
+        if(txt.getText().toString().isEmpty()){
+            txt.requestFocus();
+            txt.setError("กรุณากรอกข้อมูล");
+            return false;
+        }
+        return true;
+    }
+    boolean ValidTel(){
+        EditText txt = rootView.findViewById(R.id.addtel);
+        if(txt.getText().toString().isEmpty()){
+            txt.requestFocus();
+            txt.setError("กรุณากรอกข้อมูล");
+            return false;
+        }
+        return true;
+    }
+    boolean ValidBirthDay(){
+        Button txt = rootView.findViewById(R.id.select_birthday);
+        if(txt.getText().toString().compareTo("เลือกวันที่เกิด") == 0){
+
+            txt.setError("กรุณากรอกข้อมูล");
+            return false;
+        }
+        return true;
+    }
+    boolean ValidSalary(){
+        EditText txt = rootView.findViewById(R.id.addsalary);
+        if(txt.getText().toString().isEmpty()){
+            txt.requestFocus();
+            txt.setError("กรุณากรอกข้อมูล");
+            return false;
+        }
+        return true;
+    }
+    boolean ValidNational(){
+        EditText txt = rootView.findViewById(R.id.addnationality);
+        if(txt.getText().toString().isEmpty()){
+            txt.requestFocus();
+            txt.setError("กรุณากรอกข้อมูล");
+            return false;
+        }
+        return true;
+    }
+    boolean ValidRace(){
+        EditText txt = rootView.findViewById(R.id.addrace);
+        if(txt.getText().toString().isEmpty()){
+            txt.requestFocus();
+            txt.setError("กรุณากรอกข้อมูล");
+            return false;
+        }
+        return true;
+    }
+    boolean ValidGender(){
+        TextView txt = rootView.findViewById(R.id.addsex);
+        if(Gender == null){
+            txt.requestFocus();
+            txt.setError("กรุณาเลือกเพศ");
+            return false;
+        }
+        return true;
+    }
+    boolean ValidStatus(){
+        TextView txt = rootView.findViewById(R.id.addstatus);
+        if(Gender == null){
+            txt.requestFocus();
+            txt.setError("กรุณาเลือกเพศ");
+            return false;
+        }
+        return true;
+    }
+
+
+
+
 }

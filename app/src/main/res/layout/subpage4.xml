@@ -116,14 +116,32 @@
                android:text="เลือกวันที่" />
        </TableRow>
 
-       <Button
-           android:id="@+id/button3"
-           android:layout_width="50dp"
-           android:layout_height="50dp"
-           android:layout_marginLeft="250dp"
-           android:layout_marginTop="8dp"
-           android:background="@drawable/inwork"
-           android:text="เพิ่ม" />
+       <TableRow
+           android:layout_width="match_parent"
+           android:layout_height="match_parent" >
+
+           <androidx.constraintlayout.widget.ConstraintLayout>
+
+               <CheckBox
+                   android:id="@+id/none_experience"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="ไม่มีข้อมูล"
+                   app:layout_constraintBottom_toBottomOf="parent"
+                   app:layout_constraintStart_toStartOf="parent"
+                   app:layout_constraintTop_toTopOf="parent" />
+
+               <Button
+                   android:id="@+id/button3"
+                   android:layout_width="50dp"
+                   android:layout_height="50dp"
+                   android:background="@drawable/inwork"
+                   android:text="เพิ่ม"
+                   app:layout_constraintEnd_toEndOf="parent"
+                   app:layout_constraintTop_toTopOf="parent" />
+           </androidx.constraintlayout.widget.ConstraintLayout>
+
+       </TableRow>
 
        <androidx.recyclerview.widget.RecyclerView
            android:id="@+id/list_work"
