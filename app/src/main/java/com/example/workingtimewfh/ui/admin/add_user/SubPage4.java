@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 public class SubPage4 extends Fragment implements DatePickerDialog.OnDateSetListener, View.OnClickListener {
 
@@ -191,5 +192,10 @@ public class SubPage4 extends Fragment implements DatePickerDialog.OnDateSetList
     }
 
 
-
+    public void ReadData(Map<String, Object> dataUser) {
+        if(!experience.isEmpty())
+            dataUser.put("experience",experience);
+        else
+            dataUser.put("experience",null);
+    }
 }

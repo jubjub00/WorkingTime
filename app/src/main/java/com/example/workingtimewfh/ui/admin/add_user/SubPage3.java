@@ -27,6 +27,7 @@ import com.example.workingtimewfh.R;
 import java.nio.file.attribute.PosixFileAttributes;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 public class SubPage3 extends Fragment implements AdapterView.OnItemSelectedListener {
 
@@ -146,6 +147,7 @@ public class SubPage3 extends Fragment implements AdapterView.OnItemSelectedList
 
                 }else {
                     ((Button)rootView.findViewById(R.id.button3)).setEnabled(true);
+
                 }
             }
         });
@@ -170,12 +172,10 @@ public class SubPage3 extends Fragment implements AdapterView.OnItemSelectedList
     }
 
 
-
-
-
-
-
-
-
-
+    public void ReadData(Map<String, Object> dataUser) {
+        if(!item_all.isEmpty())
+            dataUser.put("education",item_all);
+        else
+            dataUser.put("education",null);
+    }
 }

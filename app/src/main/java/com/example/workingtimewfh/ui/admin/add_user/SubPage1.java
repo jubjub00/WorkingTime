@@ -16,12 +16,14 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater; import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -40,28 +42,41 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.workingtimewfh.R;
 import com.example.workingtimewfh.img_slide.SliderAdapter;
 import com.example.workingtimewfh.img_slide.SliderItem;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
-public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedListener,DatePickerDialog.OnDateSetListener {
+public class SubPage1 extends Fragment implements DatePickerDialog.OnDateSetListener {
     private ViewPager2 viewPager2;
     List<Bitmap> BitmapImage = new ArrayList<>();
-    Spinner name_title ;
-
+    Spinner name_title,pos,pos2 ;
+    StorageReference storageRef = FirebaseStorage.getInstance().getReference();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     View rootView;
     int NameTitle = 0,Position = 0,reli = 0;
+    ArrayList<String> All = new ArrayList<>();
     Button cam,birthday,gal;
-    String Value_NameTitle = null,Gender = null,state = null;
+    String Value_NameTitle = null,Value_Position = null,Value_State = null,Value_Religion = null,Gender = null,state = null;
 
 
 
@@ -77,12 +92,26 @@ public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedList
         rootView = inflater.inflate(R.layout.subpage1, container, false);
 
         Spinner spinner = rootView.findViewById(R.id.spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getActivity(), R.array.status, android.R.layout.simple_spinner_item);
+        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getActivity(), R.array.status, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(this);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Value_State = (String)adapter.getItem(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
 
         name_title = rootView.findViewById(R.id.addnametitle);
+        pos = rootView.findViewById(R.id.addposition);
+        pos2 = rootView.findViewById(R.id.spinner2);
+
 
         viewPager2 = rootView.findViewById(R.id.ViewPagerImage);
         birthday = rootView.findViewById(R.id.select_birthday);
@@ -201,22 +230,59 @@ public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedList
         });
 
 
+        try {
+
+            JSONObject obj = new JSONObject(loadJSONFromAsset());
+            JSONArray userArray = obj.getJSONArray("country");
+            for (int i = 0; i < userArray.length(); i++) {
+                JSONObject j = userArray.getJSONObject(i);
+                All.add(j.getString("name"));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        ArrayAdapter<String> adt = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, All);
+        final AutoCompleteTextView textView = (AutoCompleteTextView) rootView.findViewById(R.id.addnationality);
+        textView.setAdapter(adt);
+        final AutoCompleteTextView textView2 = (AutoCompleteTextView) rootView.findViewById(R.id.addrace);
+        textView2.setAdapter(adt);
+
+        textView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                textView.setText(textView.getText().toString());
+            }
+        });
+
+        textView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                textView2.setText(textView2.getText().toString());
+            }
+        });
+
 
         return rootView;
     }
 
 
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        String text = parent.getItemAtPosition(position).toString();
-        Toast.makeText(parent.getContext(), text, Toast.LENGTH_SHORT);
+    public String loadJSONFromAsset() {
+        String json = null;
+        try {
+            InputStream is = getActivity().getAssets().open("country.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return json;
     }
 
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -316,8 +382,6 @@ public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedList
                 List<String> a = (List<String>) documentSnapshot.getData().get("name_title");
                 final List<String> b = a;
 
-
-
                 ArrayAdapter aa = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item, a);
                 aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 name_title.setAdapter(aa);
@@ -393,12 +457,11 @@ public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedList
                 List<String> a = (List<String>) documentSnapshot.getData().get("position");
                 final List<String> b = a;
 
-                Spinner pos = rootView.findViewById(R.id.addposition);
-
                 ArrayAdapter aa = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item, a);
                 aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 pos.setAdapter(aa);
                 pos.setSelection(Position);
+                Value_Position = (String)pos.getSelectedItem();
                 pos.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -447,6 +510,7 @@ public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedList
 
                         }else{
                             Position = position;
+                            Value_Position = (String)pos.getSelectedItem();
                         }
                     }
 
@@ -467,13 +531,14 @@ public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedList
                 List<String> a = (List<String>) documentSnapshot.getData().get("religion");
                 final List<String> b = a;
 
-                Spinner pos = rootView.findViewById(R.id.spinner2);
+
 
                 ArrayAdapter aa = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item, a);
                 aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                pos.setAdapter(aa);
-                pos.setSelection(reli);
-                pos.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                pos2.setAdapter(aa);
+                pos2.setSelection(reli);
+                Value_Religion = (String)pos2.getSelectedItem();
+                pos2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
@@ -521,6 +586,7 @@ public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedList
 
                         }else{
                             reli = position;
+                            Value_Religion = (String)pos2.getSelectedItem();
                         }
                     }
 
@@ -534,6 +600,63 @@ public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedList
 
 
     }
+
+    public void ReadData(Map<String, Object> dataUser) {
+
+        dataUser.put("prefix",Value_NameTitle);
+        dataUser.put("name",((EditText)rootView.findViewById(R.id.addname)).getText().toString());
+        dataUser.put("lastname",((EditText)rootView.findViewById(R.id.addsurname)).getText().toString());
+        dataUser.put("name_eng",((EditText)rootView.findViewById(R.id.addname_eng)).getText().toString());
+        dataUser.put("lastname_eng",((EditText)rootView.findViewById(R.id.addsurname_eng)).getText().toString());
+        dataUser.put("personal_id",((EditText)rootView.findViewById(R.id.addid)).getText().toString());
+        dataUser.put("tel",((EditText)rootView.findViewById(R.id.addtel)).getText().toString());
+        dataUser.put("position",Value_Position);
+        dataUser.put("birth_day",((Button)rootView.findViewById(R.id.select_birthday)).getText().toString());
+        dataUser.put("salary",((EditText)rootView.findViewById(R.id.addsalary)).getText().toString());
+        dataUser.put("status_family",Value_State);
+        dataUser.put("nationality",((EditText)rootView.findViewById(R.id.addnationality)).getText().toString());
+        dataUser.put("race",((EditText)rootView.findViewById(R.id.addrace)).getText().toString());
+        dataUser.put("religion",Value_Religion);
+        dataUser.put("gender",Gender);
+        dataUser.put("type_employees",state);
+
+        dataUser.put("username",((EditText)rootView.findViewById(R.id.addtel)).getText().toString());
+        dataUser.put("password",((EditText)rootView.findViewById(R.id.addtel)).getText().toString());
+
+
+        List<String> list_id_img = null;
+        if(!BitmapImage.isEmpty()) {
+            list_id_img = new ArrayList<>();;
+            int i=0;
+            for (Bitmap bp: BitmapImage) {
+                String tmp = FirebaseDatabase.getInstance().getReference("user").push().getKey();
+
+                list_id_img.add(tmp) ;
+                StorageReference mountainsRef = storageRef.child("user/"+tmp);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bp.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                byte[] img = baos.toByteArray();
+                UploadTask uploadTask = mountainsRef.putBytes(img);
+                uploadTask.addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                    }
+                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    }
+                });
+                i++;
+            }
+
+        }
+        dataUser.put("id_img", list_id_img);
+
+
+    }
+
+
+
 
     public class ZoomOutPageTransformer implements ViewPager2.PageTransformer {
         private static final float MIN_SCALE = 0.85f;
@@ -593,16 +716,18 @@ public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedList
 
 
     boolean ValidAll(ViewPager pager){
-        pager.setCurrentItem(0);
-        if(!ValidName() | !ValidLastName() | !ValidTel() | !ValidSalary() | !ValidNameEng() | !ValidLastNameEng() | !ValidPersonID() | !ValidBirthDay() | !ValidNational() | !ValidRace() | !ValidGender() | !ValidStatus())return false;
+
+        if(!ValidName() | !ValidLastName() | !ValidTel() | !ValidSalary() | !ValidNameEng() | !ValidLastNameEng() | !ValidPersonID() | !ValidBirthDay() | !ValidNational() | !ValidRace() | !ValidGender() | !ValidStatus()){
+            pager.setCurrentItem(0);
+            if(!ValidName() | !ValidLastName() | !ValidTel() | !ValidSalary() | !ValidNameEng() | !ValidLastNameEng() | !ValidPersonID() | !ValidBirthDay() | !ValidNational() | !ValidRace() | !ValidGender() | !ValidStatus()){
+                return false;
+            }
+
+        }
         return true;
 
     }
-    void ValidPrefix(){
 
-        Toast.makeText(getActivity(),""+Value_NameTitle,Toast.LENGTH_SHORT).show();
-
-    }
     boolean ValidName(){
 
         EditText txt = (EditText) rootView.findViewById(R.id.addname);
@@ -646,7 +771,7 @@ public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedList
     boolean ValidPersonID(){
 
         EditText txt = (EditText) rootView.findViewById(R.id.addid);
-        if(txt.getText().toString().isEmpty()){
+        if(txt.getText().toString().isEmpty() && txt.getText().toString().length() != 13){
             txt.requestFocus();
             txt.setError("กรุณากรอกข้อมูล");
             return false;
@@ -655,7 +780,7 @@ public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedList
     }
     boolean ValidTel(){
         EditText txt = rootView.findViewById(R.id.addtel);
-        if(txt.getText().toString().isEmpty()){
+        if(txt.getText().toString().isEmpty() && txt.getText().toString().length() != 10){
             txt.requestFocus();
             txt.setError("กรุณากรอกข้อมูล");
             return false;
@@ -681,7 +806,7 @@ public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedList
         return true;
     }
     boolean ValidNational(){
-        EditText txt = rootView.findViewById(R.id.addnationality);
+        AutoCompleteTextView txt = rootView.findViewById(R.id.addnationality);
         if(txt.getText().toString().isEmpty()){
             txt.requestFocus();
             txt.setError("กรุณากรอกข้อมูล");
@@ -690,7 +815,7 @@ public class SubPage1 extends Fragment implements AdapterView.OnItemSelectedList
         return true;
     }
     boolean ValidRace(){
-        EditText txt = rootView.findViewById(R.id.addrace);
+        AutoCompleteTextView txt = rootView.findViewById(R.id.addrace);
         if(txt.getText().toString().isEmpty()){
             txt.requestFocus();
             txt.setError("กรุณากรอกข้อมูล");

@@ -24,6 +24,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class SubPage2 extends Fragment {
 
@@ -113,11 +114,11 @@ public class SubPage2 extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 int a = All.indexOf(textView11.getText().toString());
-                //Toast.makeText(getActivity(),"rtrtrtr"+ZIPCODE.get(a),Toast.LENGTH_SHORT).show();
                 textView11.setText(SUB_DISTRICT_NAME.get(a));
                 textView12.setText(DISTRICT_NAME.get(a));
                 textView13.setText(PROVINCE_NAME.get(a));
                 textView14.setText(ZIPCODE.get(a));
+
 
             }
         });
@@ -128,11 +129,15 @@ public class SubPage2 extends Fragment {
             public void onClick(View v) {
                 boolean checked = ((CheckBox) sameLocation).isChecked();
                 if(checked){
-                    addr2.setText(addr.getText().toString());
-                    textView11.setText(textView.getText().toString());
-                    textView12.setText(textView2.getText().toString());
-                    textView13.setText(textView3.getText().toString());
-                    textView14.setText(textView4.getText().toString());
+
+
+                    ((EditText)rootView.findViewById(R.id.addaddress2)).setText(addr.getText().toString());
+                    ((AutoCompleteTextView) rootView.findViewById(R.id.addcanton2)).setText(textView.getText().toString());
+                    ((AutoCompleteTextView) rootView.findViewById(R.id.addDistrict2)).setText(textView2.getText().toString());
+                    ((AutoCompleteTextView) rootView.findViewById(R.id.addprovince2)).setText(textView3.getText().toString());
+                    ((AutoCompleteTextView) rootView.findViewById(R.id.addcode2)).setText(textView4.getText().toString());
+
+
                 }else {
                     addr2.setText(null);
                     textView11.setText(null);
@@ -142,11 +147,6 @@ public class SubPage2 extends Fragment {
                 }
             }
         });
-
-
-
-
-
 
         return rootView;
     }
@@ -171,8 +171,12 @@ public class SubPage2 extends Fragment {
 
 
     public boolean ValidAll(ViewPager pager) {
-        pager.setCurrentItem(1);
-        if(!ValidPlace1() | !ValidSubPlace1() | !ValidPlace2() | !ValidSubPlace2())return false;
+
+        if(!ValidPlace1() | !ValidSubPlace1() | !ValidPlace2() | !ValidSubPlace2()){
+            pager.setCurrentItem(1);
+            if(!ValidPlace1() | !ValidSubPlace1() | !ValidPlace2() | !ValidSubPlace2())
+                return false;
+        }
         return true;
     }
 
@@ -224,5 +228,19 @@ public class SubPage2 extends Fragment {
     }
 
 
+    public void ReadData(Map<String, Object> dataUser) {
 
+        dataUser.put("place_now",((EditText)rootView.findViewById(R.id.addaddress1)).getText().toString());
+        dataUser.put("place_now_sub",((EditText)rootView.findViewById(R.id.addcanton1)).getText().toString());
+        dataUser.put("place_now_dist",((EditText)rootView.findViewById(R.id.addDistrict1)).getText().toString());
+        dataUser.put("place_now_prov",((EditText)rootView.findViewById(R.id.addprovince1)).getText().toString());
+        dataUser.put("place_now_zipcode",((EditText)rootView.findViewById(R.id.addcode1)).getText().toString());
+
+        dataUser.put("place_part",((EditText)rootView.findViewById(R.id.addaddress2)).getText().toString());
+        dataUser.put("place_part_sub",((EditText)rootView.findViewById(R.id.addcanton2)).getText().toString());
+        dataUser.put("place_part_dist",((EditText)rootView.findViewById(R.id.addDistrict2)).getText().toString());
+        dataUser.put("place_part_prov",((EditText)rootView.findViewById(R.id.addprovince2)).getText().toString());
+        dataUser.put("place_part_zipcode",((EditText)rootView.findViewById(R.id.addcode2)).getText().toString());
+
+    }
 }

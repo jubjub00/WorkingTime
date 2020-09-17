@@ -66,6 +66,14 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </TableRow>
 
+    <ProgressBar
+        android:id="@+id/progressBar3"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
 
     <LinearLayout
         android:layout_width="match_parent"

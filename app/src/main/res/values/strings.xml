@@ -109,5 +109,14 @@
         <item>ปริญญาโท</item>
         <item>ปริญญาเอก</item>
     </string-array>
+    
+    <string-array name="mainLeave">
+        <item>--กรุณาเลือก--</item>
+        <item>ลากิจ</item>
+        <item>ลาป่วย</item>
+        <item>ลาพักร้อน</item>
+        <item>ลาคลอด</item>
+        <item>อื่นๆ</item>
+    </string-array>
 
 </resources>

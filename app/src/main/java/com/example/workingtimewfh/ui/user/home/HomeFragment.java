@@ -395,7 +395,8 @@ public class HomeFragment extends Fragment {
         String KeyDocument = sp.getString("KeyDocument","NotKey");
 
         if(!KeyDocument.equals("NotKey")){
-            NameLastName.setText(sp.getString("PREFIX","Not Data")+sp.getString("NAME","Not Data")+" "+sp.getString("LASTNAME","Not Data"));
+            String[] a = ((String) sp.getString("PREFIX","Not Data")).split("/");
+            NameLastName.setText(a[0]+" "+sp.getString("NAME","Not Data")+" "+sp.getString("LASTNAME","Not Data"));
         }else{
             NameLastName.setText("Not found data!!!");
         }
