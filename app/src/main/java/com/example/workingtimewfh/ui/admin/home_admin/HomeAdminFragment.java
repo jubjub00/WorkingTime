@@ -3,6 +3,7 @@ package com.example.workingtimewfh.ui.admin.home_admin;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -81,11 +82,12 @@ public class HomeAdminFragment extends Fragment {
             @Override
             public void onRowClicked(int position) {
                 FirebaseFirestore detail = FirebaseFirestore.getInstance();
+                final ProgressDialog dialog = ProgressDialog.show(getActivity(), "", "Loading. Please wait...", true);
                 Query a = detail.collection("user").whereEqualTo("tel",recyclerAdapter.getItem(position).getTel());
                 a.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
+                        dialog.dismiss();
                         //Toast.makeText(getActivity(),queryDocumentSnapshots.getDocuments().get(0).getId(),Toast.LENGTH_SHORT).show();
                         Intent ToDetail =new Intent(getActivity(),DetailEmployees.class);
                         ToDetail.putExtra("id",queryDocumentSnapshots.getDocuments().get(0).getId());

@@ -248,7 +248,7 @@ public class AddUserFragment extends Fragment  implements ViewPager.OnPageChange
                     for (subDatapage3 x:a) {
                         txt += "\t"+x.getLevel()+" "+x.getName()+" "+x.getYear()+" "+x.getGrade()+"\n";
                     }
-                }else txt += "\tไม่มีข้อมูล";
+                }else txt += "\tไม่มีข้อมูล\n";
 
 
                 txt += "ข้อมูลการทำงาน\n";
@@ -310,6 +310,7 @@ public class AddUserFragment extends Fragment  implements ViewPager.OnPageChange
                 builder.setNegativeButton("แก้ไข", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        progressBar3.setVisibility(View.GONE);
                         dialog.dismiss();
 
                     }

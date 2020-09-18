@@ -19,7 +19,7 @@
             android:title="@string/เปลี่ยนรัสผ่าน" />
         <item
             android:id="@+id/nav_leave"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/vacation"
             android:title="ขอลางาน" />
     </group>
 
