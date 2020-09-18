@@ -57,8 +57,6 @@ public class AddUserFragment extends Fragment  implements ViewPager.OnPageChange
     int getCurrent_position = 0;
 
 
-
-
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         AddUserViewModel = ViewModelProviders.of(this).get(AddUserViewModel.class);
         root = inflater.inflate(R.layout.fragment_add_user, container, false);

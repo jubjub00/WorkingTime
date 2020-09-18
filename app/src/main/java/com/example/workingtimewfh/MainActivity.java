@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,10 +17,14 @@ import android.widget.Toast;
 
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     final String PREF_NAME = "LoginPreferences";
@@ -43,20 +48,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         sp = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         editor = sp.edit();
 
+        if(!sp.getString(KEY_DOCUMENT,"???").equals("???")){
+            final ProgressDialog dialog = ProgressDialog.show(this, "", "Loading. Please wait...", true);
+
+            db.collection("user").document(sp.getString(KEY_DOCUMENT,"???")).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    Map<String, Object> a = documentSnapshot.getData();
+
+                        if(!sp.getString(KEY_USERNAME,"???").equals("???") && !sp.getString(KEY_PASSWORD,"???").equals("???") ){
+                            if("user".equals(sp.getString(KEY_STATUS,"???")) && ((String)a.get("status_on")).matches("yes")) {
+                                dialog.dismiss();
+                                Intent log = new Intent(MainActivity.this, MenuUser.class);
+                                startActivity(log);
+                                finish();
+                            }else if("admin".equals(sp.getString(KEY_STATUS,"???"))){
+                                dialog.dismiss();
+                                Intent log1 = new Intent(MainActivity.this, MenuAdmin.class);
+                                startActivity(log1);
+                                finish();
+                            }else{
+                                dialog.dismiss();
+                                Toast.makeText(getApplication(),"คุณไม่มีสิทธิ์เข้าใช้งาน",Toast.LENGTH_SHORT).show();
+                            }
 
 
-        if(!sp.getString(KEY_USERNAME,"???").equals("???") && !sp.getString(KEY_PASSWORD,"???").equals("???")){
-            if("user".equals(sp.getString(KEY_STATUS,"???"))) {
-                Intent log = new Intent(MainActivity.this, MenuUser.class);
-                startActivity(log);
-                finish();
-            }else if("admin".equals(sp.getString(KEY_STATUS,"???"))){
-                Intent log1 = new Intent(MainActivity.this, MenuAdmin.class);
-                startActivity(log1);
-                finish();
-            }
+                        }
 
+
+                }
+            });
         }
+
+
+
 
     }
 
@@ -75,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     int correct=0;
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        if(usern.equals(document.getString("username")) && password.equals(document.getString("password"))){
+                        if(usern.equals(document.getString("username")) && password.equals(document.getString("password")) && document.getString("status_on").matches("yes") ){
                             correct = 1;
 
 
@@ -83,17 +108,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             editor.putString(KEY_USERNAME,usern);
                             editor.putString(KEY_PASSWORD,password);
                             editor.putString(KEY_STATUS,status);
+
                             editor.putString(KEY_DOCUMENT,document.getId());
                             editor.putString("NAME",document.getString("name"));
                             editor.putString("LASTNAME",document.getString("lastname"));
                             editor.putString("PREFIX",document.getString("prefix"));
 
                             editor.commit();
+                        }else if(usern.equals(document.getString("username")) && password.equals(document.getString("password")) && document.getString("status_on").matches("no") ){
+                            correct = 2;
                         }
 
                     }
-                    if(correct == 0 ){
-                        Toast.makeText(MainActivity.this,"ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",Toast.LENGTH_SHORT).show();
+                    if(correct == 0 || correct == 2){
+
+                        if(correct == 2)
+                            Toast.makeText(MainActivity.this,"คุณไม่มีสิทธิ์เข้าใช้งาน",Toast.LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(MainActivity.this,"ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",Toast.LENGTH_SHORT).show();
+
                         progressBar.setVisibility(View.INVISIBLE);
                     }
                 } else {
