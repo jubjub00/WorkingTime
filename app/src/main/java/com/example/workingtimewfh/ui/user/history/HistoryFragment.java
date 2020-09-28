@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -234,25 +235,64 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, D
                             }
 
                             String SumString[] ;
-                            if(out != null)SumString = new String[in.length+out.length];
-                            else SumString = new String[in.length];
+                            boolean first = true;
+                            if(out == null && in != null){
+                                SumString = new String[in.length];
+                                first = true;
+                            }
+                            else if(in == null && out != null){
+                                SumString = new String[out.length];
+                                first = false;
+                            }
+                            else if(out == null && in == null){
+                                SumString = new String[0];
+                            }
+                            else {
+                                SumString = new String[in.length+out.length];
+                                first = true;
+                                if(in.length < out.length)
+                                    first = false;
+                            }
 
 
                             int inn=0,outt=0;
                             for(int i=0;i<SumString.length;i++){
+                                int a=-1,b=-1;
+                                if(in != null)
+                                    a = in.length-1;
+                                if(out != null)
+                                    b = out.length-1;
 
-                                if(i%2==0){
-                                    SumString[i] = in[inn]+"       เข้างาน";
-                                    inn++;
-                                }else if(i%2==1){
-                                    SumString[i] = out[outt]+"       ออกงาน";
-                                    outt++;
-                                }
+                                        if(  inn <= a && first){
+                                            if(!in[inn].isEmpty()) {
+                                                SumString[i] = in[inn] + "       เข้างาน";
+                                                inn++;
+                                                first = false;
+                                            }
+                                        }else if( outt <= b && !first){
+                                            if(!out[outt].isEmpty()) {
+                                                SumString[i] = out[outt] + "       ออกงาน";
+                                                outt++;
+                                                first = true;
+                                            }
+                                        }
+
+
+
                             }
+
+
+
+
                             DialogA sss = new DialogA();
                             sss.setPos(pos);
                             sss.setArrTask(ArrTask);
-                            sss.setString(SumString);
+                            if(SumString.length == 0){
+                                String SumString1[] = new String[1];
+                                SumString1[0] = "ไม่มีข้อมูล";
+                                sss.setString(SumString1);
+                            }else
+                                sss.setString(SumString);
                             sss.show(getFragmentManager(),"ok");
                         }
                     });

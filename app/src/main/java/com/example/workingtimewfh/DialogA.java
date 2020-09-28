@@ -4,9 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.provider.CalendarContract;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -26,7 +24,12 @@ public class DialogA extends AppCompatDialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),R.style.MyAlertDialogTheme);
         CharSequence[] items =null;
 
-        items = s;
+        if(s != null)
+            items = s;
+        else{
+            CharSequence[] cs =new String[] {"ไม่มีข้อมูล"};
+            items = cs;
+        }
         TextView title = new TextView(getActivity());
         title.setText("การทำงานวันที่ "+ArrTask.get(pos).get("Date"));
         title.setTypeface(ResourcesCompat.getFont(getActivity(), R.font.kanit_medium));

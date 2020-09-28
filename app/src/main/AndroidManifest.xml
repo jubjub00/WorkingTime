@@ -28,7 +28,7 @@
             android:name=".MenuAdmin"
             android:label="MenuAdmin"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ui.user.leave.add_leave" />
+        <activity android:name=".ui.user.leave.add_leave"/>
         <activity android:name=".ui.user.leave.view_leave" />
         <activity android:name=".MainActivity">
             <intent-filter>

@@ -33,7 +33,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class RecyclerAdapter extends FirestoreRecyclerAdapter<UserStruct,RecyclerAdapter.ViewHolder> {
 
     private OnItemClickListener listener;
-    FirebaseStorage storageRef = FirebaseStorage.getInstance();
+
 
     public RecyclerAdapter(@NonNull FirestoreRecyclerOptions<UserStruct> options) {
         super(options);
@@ -43,7 +43,6 @@ public class RecyclerAdapter extends FirestoreRecyclerAdapter<UserStruct,Recycle
     @Override
     protected void onBindViewHolder(@NonNull final RecyclerAdapter.ViewHolder holder, int position, @NonNull UserStruct model) {
         holder.name.setText(model.getName() + " " + model.getLastname() + "\n" + model.getTel());
-
 
 
     }

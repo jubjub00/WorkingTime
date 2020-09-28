@@ -14,8 +14,11 @@ import android.widget.TabHost;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.workingtimewfh.R;
+import com.google.android.material.tabs.TabItem;
+import com.google.android.material.tabs.TabLayout;
 
 public class LeaveFragment extends Fragment {
 
@@ -27,24 +30,29 @@ public class LeaveFragment extends Fragment {
         mLocalActivityManager = new LocalActivityManager(getActivity(), false);
         mLocalActivityManager.dispatchCreate(savedInstanceState);
 
-        TabHost tabHost = (TabHost) root.findViewById(R.id.tabhost);
-        tabHost.setup(mLocalActivityManager);
+        TabLayout tabHost = (TabLayout) root.findViewById(R.id.tabLayout);
+        TabItem add = root.findViewById(R.id.add);
+        TabItem view = root.findViewById(R.id.view);
+        final ViewPager viewPager = root.findViewById(R.id.showPager);
 
-        TabHost.TabSpec tabSpec = tabHost.newTabSpec("tab1")
-                .setIndicator("เอกสารขอลา")
-                .setContent(new Intent(this.getActivity(), add_leave.class));
+        LeaveAdapter leaveAdapter = new LeaveAdapter(getChildFragmentManager());
+        viewPager.setAdapter(leaveAdapter);
+        tabHost.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
 
-        TabHost.TabSpec tabSpec2 = tabHost.newTabSpec("tab2")
-                .setIndicator("สถานะการลา")
-                .setContent(new Intent(this.getActivity(), view_leave.class));
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
 
+            }
 
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
 
-        tabHost.addTab(tabSpec);
-        tabHost.addTab(tabSpec2);
-        //tabHost.setBackgroundColor(Color.parseColor("#6A98DC"));
-
-
+            }
+        });
 
         return root;
     }

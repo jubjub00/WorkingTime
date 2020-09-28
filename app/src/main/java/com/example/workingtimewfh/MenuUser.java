@@ -68,26 +68,7 @@ public class MenuUser extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        /*switch (item.getItemId()){
-            case R.id.logout:
-                sp = getSharedPreferences("WorkingTime", Context.MODE_PRIVATE);
-                String ch = sp.getString("working_status","???");
-                if(!ch.equals("ออกงาน")){
-                    sp = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-                    editor = sp.edit();
-                    editor.clear().commit();
 
-                    sp = getSharedPreferences("WorkingTime", Context.MODE_PRIVATE);
-                    editor = sp.edit();
-                    editor.clear().commit();
-                    Intent log1 = new Intent(MenuUser.this,MainActivity.class );
-                    startActivity(log1);
-                    finish();
-                }else{
-                    Toast.makeText(MenuUser.this,"ไม่อนุญาตให้ออกจากระบบ ขณะเข้างาน",Toast.LENGTH_LONG).show();
-                }
-
-        }*/
 
         return super.onOptionsItemSelected(item);
     }

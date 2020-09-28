@@ -50,14 +50,14 @@ public class HomeAdminFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private RecyclerAdapter recyclerAdapter;
-    List<String> ListUser ;
+
     FirebaseFirestore db ;
     Query queryR;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ListUser =new ArrayList<>();
+
         db = FirebaseFirestore.getInstance();
         queryR = db.collection("user").whereEqualTo("status","user");
         FirestoreRecyclerOptions<UserStruct> options = new FirestoreRecyclerOptions.Builder<UserStruct>().setQuery(queryR,UserStruct.class).build();

@@ -2,6 +2,8 @@ package com.example.workingtimewfh.ui.admin.home_admin;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.app.AlertDialog;
@@ -10,31 +12,44 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.CalendarContract;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.workingtimewfh.DialogA;
 import com.example.workingtimewfh.R;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class DetailEmployees extends AppCompatActivity {
     HistoryEmployeeAdapter recyclerAdapter;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     Query queryR;
     String Value_State;
-
+    HashMap<String,Object> mm;
+    ArrayList<String> DataToRec;
+    ArrayList<String> data;
+    String id = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +57,7 @@ public class DetailEmployees extends AppCompatActivity {
         setContentView(R.layout.activity_detail_employees);
 
         Intent GetId = getIntent();
-        final String id = GetId.getStringExtra("id");
+        id = GetId.getStringExtra("id");
         create_top(id);
 
         db.collection("user").document(id).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -123,14 +138,28 @@ public class DetailEmployees extends AppCompatActivity {
         });
 
 
-        Spinner spinner_month = findViewById(R.id.spn_month);
+        final Spinner spinner_month = findViewById(R.id.spn_month);
         final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.month, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_month.setAdapter(adapter);
+        spinner_month.setSelection(0);
+
+        ArrayList<String> years = new ArrayList<String>();
+        int thisYear = Calendar.getInstance().get(Calendar.YEAR);
+        for(int i = thisYear+543; i >= 2500; i--)
+            years.add(Integer.toString(i));
+
+        ArrayAdapter<String> adapter_year = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, years);
+        final Spinner spinYear = (Spinner)findViewById(R.id.spn_year);
+        spinYear.setAdapter(adapter_year);
+        spinYear.setSelection(0);
+
+
         spinner_month.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long ide) {
                 Value_State = (String) adapter.getItem(position);
+                create_recycle((String)spinner_month.getSelectedItem(),(String)spinYear.getSelectedItem(),id);
             }
 
             @Override
@@ -139,18 +168,29 @@ public class DetailEmployees extends AppCompatActivity {
             }
         });
 
+        spinYear.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long ide) {
+                Value_State = (String) adapter.getItem(position);
+                create_recycle((String)spinner_month.getSelectedItem(),(String)spinYear.getSelectedItem(),id);
+            }
 
-        ArrayList<String> years = new ArrayList<String>();
-        int thisYear = Calendar.getInstance().get(Calendar.YEAR);
-        for(int i = thisYear+543; i >= 2500; i--)
-            years.add(Integer.toString(i));
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
-        ArrayAdapter<String> adapter_year = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, years);
-        Spinner spinYear = (Spinner)findViewById(R.id.spn_year);
-        spinYear.setAdapter(adapter_year);
+            }
+        });
+
+        ((Button)findViewById(R.id.show_all)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                create_recycle(null,null,id);
+            }
+        });
 
 
 
+        create_recycle((String)spinner_month.getSelectedItem(),(String)spinYear.getSelectedItem(),id);
     }
 
 
@@ -268,6 +308,64 @@ public class DetailEmployees extends AppCompatActivity {
                 ViewPager2 recyclerView =  findViewById(R.id.HistoryEmployee);
                 recyclerView.setAdapter(recyclerAdapter);
 
+            }
+        });
+    }
+    public void create_recycle(final String month, final String year, String id){
+        db.collection("WorkingTime").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+
+
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                data = new ArrayList<>();
+                if(task.isComplete()){
+                    DataToRec = new ArrayList<>();
+                    mm = (HashMap<String,Object>) task.getResult().getData();
+
+                    if(mm == null){
+                        DataToRec.add("ไม่มีข้อมูล");
+                        DetailEmployeesAdapter detailEmployeesAdapter= new DetailEmployeesAdapter(DataToRec);
+                        ((RecyclerView)findViewById(R.id.RecycleWorkTime)).setLayoutManager(new LinearLayoutManager(getApplication()));
+                        ((RecyclerView)findViewById(R.id.RecycleWorkTime)).setAdapter(detailEmployeesAdapter);
+                        return;
+                    }
+
+                    Map<String, Object> sortedTask = new TreeMap<>();
+                    sortedTask.putAll(mm);
+                    Iterator iterator = sortedTask.keySet().iterator();
+
+                    while( iterator.hasNext() ) {
+
+                        String DateWork = iterator.next().toString();
+                        String DaySection[] = DateWork.split(" ");
+                        if(month == null && year == null)
+                            DataToRec.add(DaySection[0]+" "+DaySection[1]+" "+DaySection[2]);
+                        else
+                            if(DaySection[1].matches(month) && DaySection[2].matches(year))
+                                DataToRec.add(DaySection[0]+" "+DaySection[1]+" "+DaySection[2]);
+
+
+                    }
+                    if(DataToRec.size() > 0){
+                        DetailEmployeesAdapter detailEmployeesAdapter= new DetailEmployeesAdapter(DataToRec);
+
+                        ((RecyclerView)findViewById(R.id.RecycleWorkTime)).setLayoutManager(new LinearLayoutManager(getApplication()));
+                        ((RecyclerView)findViewById(R.id.RecycleWorkTime)).setAdapter(detailEmployeesAdapter);
+                    }else{
+                        DataToRec.add("ไม่มีข้อมูล");
+                        DetailEmployeesAdapter detailEmployeesAdapter= new DetailEmployeesAdapter(DataToRec);
+                        ((RecyclerView)findViewById(R.id.RecycleWorkTime)).setLayoutManager(new LinearLayoutManager(getApplication()));
+                        ((RecyclerView)findViewById(R.id.RecycleWorkTime)).setAdapter(detailEmployeesAdapter);
+                    }
+
+                }
+
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getApplication(),"เกิดข้อผิดพลาด",Toast.LENGTH_SHORT).show();
             }
         });
     }
