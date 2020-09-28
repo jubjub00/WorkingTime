@@ -1,6 +1,7 @@
 package com.example.workingtimewfh.ui.admin.add_user;
 
 import android.app.DatePickerDialog;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater; import android.view.View;
 import android.view.ViewGroup;
@@ -168,24 +169,29 @@ public class SubPage4 extends Fragment implements DatePickerDialog.OnDateSetList
                 this,
                 Calendar.getInstance().get(Calendar.YEAR),
                 Calendar.getInstance().get(Calendar.MONTH),
+
                 Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
         );
-
+        ((ViewGroup) datePickerDialog.getDatePicker()).findViewById(Resources.getSystem().getIdentifier("day", "id", "android")).setVisibility(View.GONE);
+        long now = System.currentTimeMillis() - 1000;
+        datePickerDialog.getDatePicker().setMaxDate(now);
         datePickerDialog.show();
 
     }
 
 
     @Override
-    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+    public void onDateSet(DatePicker view, int year, int month, int day) {
+
+
 
         if(selected == 0) {
-            SD = year+" "+(month+1)+" "+dayOfMonth;
-            ((Button) rootView.findViewById(R.id.HW_start)).setText(dayOfMonth + "/" + (month + 1) + "/" + (year + 543));
+            SD = year+" "+(month+1)+" "+day;
+            ((Button) rootView.findViewById(R.id.HW_start)).setText( (month + 1) + "/" + (year + 543));
         }
         else if(selected == 1) {
-            ED = year+" "+(month+1)+" "+dayOfMonth;
-            ((Button) rootView.findViewById(R.id.HW_end)).setText(dayOfMonth + "/" + (month + 1) + "/" + (year + 543));
+            ED = year+" "+(month+1)+" "+day;
+            ((Button) rootView.findViewById(R.id.HW_end)).setText( (month + 1) + "/" + (year + 543));
         }
 
 
