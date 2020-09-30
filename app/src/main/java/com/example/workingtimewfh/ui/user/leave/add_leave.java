@@ -16,6 +16,7 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -82,7 +83,8 @@ public class add_leave extends Fragment implements DatePickerDialog.OnDateSetLis
                 Calendar.getInstance().get(Calendar.MONTH),
                 Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
         );
-
+        long now = System.currentTimeMillis()-1000;
+        datePickerDialog.getDatePicker().setMinDate(now+(1000*60*60*24*3));
         datePickerDialog.show();
 
     }
@@ -183,6 +185,7 @@ public class add_leave extends Fragment implements DatePickerDialog.OnDateSetLis
                 }
                 break;
             case R.id.button4:
+
                 String s = ((Button)root.findViewById(R.id.DayStart)).getText().toString();
                 String e = ((Button)root.findViewById(R.id.DayEnd)).getText().toString();
 
@@ -238,15 +241,18 @@ public class add_leave extends Fragment implements DatePickerDialog.OnDateSetLis
                         SharedPreferences sp = this.getActivity().getSharedPreferences("LoginPreferences", Context.MODE_PRIVATE);
                         String id = sp.getString("KeyDocument", "a");
                         if(!id.matches("a")){
+                            ((ProgressBar)root.findViewById(R.id.add_leave)).setVisibility(View.VISIBLE);
                             FirebaseFirestore.getInstance().collection("leave").document(id).set(total, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
+                                    ((ProgressBar)root.findViewById(R.id.add_leave)).setVisibility(View.GONE);
                                     Toast.makeText(getActivity(),"เพิ่มการลางานได้สำเร็จ",Toast.LENGTH_SHORT).show();
                                     getActivity().onBackPressed();
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
+                                    ((ProgressBar)root.findViewById(R.id.add_leave)).setVisibility(View.GONE);
                                     Toast.makeText(getActivity(),"เพิ่มการลางานผิดพลาด",Toast.LENGTH_SHORT).show();
                                 }
                             });

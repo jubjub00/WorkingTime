@@ -4,33 +4,39 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
     <androidx.cardview.widget.CardView
-        android:id="@+id/CardViewLeave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
         android:layout_marginTop="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_marginBottom="10dp">
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
             <TextView
-                android:id="@+id/DateCommit"
+                android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="วันที่ส่งเรื่องขอลา">
+                android:text="name">
 
             </TextView>
 
-
+            <TextView
+                android:id="@+id/date_com"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
             <TextView
                 android:id="@+id/textView17"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="วันที่ลางาน" />
+
 
             <TableRow
                 android:layout_width="match_parent"
@@ -43,11 +49,11 @@
                     android:text="TextView" />
 
                 <TextView
-                android:id="@+id/StartTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text="TextView" />
+                    android:id="@+id/StartTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="TextView" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -70,39 +76,43 @@
                     android:text="TextView" />
             </TableRow>
 
+            <TextView
+                android:id="@+id/desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView" />
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent" >
+                <androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout>
 
+                    <Button
+                        android:id="@+id/submit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="39dp"
+                        android:text="อนุมัติ"
+                        android:background="#58D68D"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                <Button
-                    android:id="@+id/button5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="39dp"
+                    <Button
+                        android:id="@+id/canc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="39dp"
+                        android:text="ไม่อนุมัติ"
+                        android:background="#EC7063"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                    android:text="Button"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <Button
-                    android:id="@+id/can_leave"
-                    android:layout_width="wrap_content"
-                    android:layout_height="39dp"
-                    android:visibility="invisible"
-                    android:text="ยกเลิกการลางาน"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"></Button>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </TableRow>
-
 
         </LinearLayout>
 
+
     </androidx.cardview.widget.CardView>
+
 
 </LinearLayout>

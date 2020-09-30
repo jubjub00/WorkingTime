@@ -19,6 +19,7 @@ public class ViewLeaveAdapter extends RecyclerView.Adapter<ViewLeaveAdapter.View
 
 
     ArrayList<ArrayList<String>> dataSet;
+    onItemClicked listener;
 
     public ViewLeaveAdapter(ArrayList<ArrayList<String>> dataSet) {
         this.dataSet = dataSet;
@@ -29,7 +30,7 @@ public class ViewLeaveAdapter extends RecyclerView.Adapter<ViewLeaveAdapter.View
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.subpage_tabviewleave,parent,false);
-        return new ViewHolder(view);
+        return new ViewHolder(view,listener);
     }
 
     @Override
@@ -47,6 +48,13 @@ public class ViewLeaveAdapter extends RecyclerView.Adapter<ViewLeaveAdapter.View
             else holder.button5.setBackgroundColor(Color.parseColor("#EC7063"));
 
 
+            if(item.get(5).matches("รออนุมัติ"))
+                holder.can_leave.setVisibility(View.VISIBLE);
+            else
+                holder.can_leave.setVisibility(View.GONE);
+
+
+
         }
 
 
@@ -59,8 +67,8 @@ public class ViewLeaveAdapter extends RecyclerView.Adapter<ViewLeaveAdapter.View
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView DateCommit,StartDay,StartTime,EndDay,EndTime;
-        Button button5;
-        public ViewHolder(@NonNull View itemView) {
+        Button button5,can_leave;
+        public ViewHolder(@NonNull View itemView, final onItemClicked listener) {
             super(itemView);
             DateCommit = itemView.findViewById(R.id.DateCommit);
             StartDay = itemView.findViewById(R.id.StartDay);
@@ -68,8 +76,24 @@ public class ViewLeaveAdapter extends RecyclerView.Adapter<ViewLeaveAdapter.View
             EndDay = itemView.findViewById(R.id.EndDay);
             EndTime = itemView.findViewById(R.id.EndTime);
             button5 = itemView.findViewById(R.id.button5);
+            can_leave = itemView.findViewById(R.id.can_leave);
+            can_leave.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if(position != RecyclerView.NO_POSITION){
+                        listener.clicked(position);
+                    }
+                }
+            });
+
 
 
         }
     }
+
+    public interface onItemClicked{
+        void clicked(int position);
+    }
+    public void SetOnClickListener(onItemClicked listener){this.listener = listener;}
 }

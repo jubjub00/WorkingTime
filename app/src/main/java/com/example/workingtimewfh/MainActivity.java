@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         sp = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         editor = sp.edit();
+        Log.d("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",sp.getString(KEY_DOCUMENT,"???"));
 
         if(!sp.getString(KEY_DOCUMENT,"???").equals("???")){
             final ProgressDialog dialog = ProgressDialog.show(this, "", "Loading. Please wait...", true);

@@ -45,8 +45,6 @@ public class DetailEmployeesAdapter extends RecyclerView.Adapter<DetailEmployees
             super(itemView);
             show = itemView.findViewById(R.id.txt);
 
-
-
         }
     }
 }

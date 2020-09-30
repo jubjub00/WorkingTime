@@ -703,6 +703,10 @@ public class SubPage1 extends Fragment implements DatePickerDialog.OnDateSetList
                 Calendar.getInstance().get(Calendar.MONTH),
                 Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
         );
+        long now = System.currentTimeMillis() - 1000;
+        Calendar c = Calendar.getInstance();
+        c.set(c.get(Calendar.YEAR)-16, Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.getDatePicker().setMaxDate(c.getTimeInMillis());
 
         datePickerDialog.show();
 
