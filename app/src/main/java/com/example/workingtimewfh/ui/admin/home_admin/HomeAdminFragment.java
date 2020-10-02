@@ -107,9 +107,6 @@ public class HomeAdminFragment extends Fragment {
                     public void onSwipeOptionClicked(int viewID, final int position) {
                         switch (viewID){
                             case R.id.delete_task:
-                                //taskList.remove(position);
-                                //recyclerviewAdapter.setTaskList(taskList);
-                                //Toast.makeText(getActivity(),"delete "+viewID +"  : "+recyclerAdapter.getItem(position).getId(),Toast.LENGTH_SHORT).show();
 
                                 AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
                                 dialog.setTitle("ยืนยันการลบพนักงาน");

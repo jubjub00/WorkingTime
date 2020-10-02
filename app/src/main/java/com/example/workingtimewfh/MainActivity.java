@@ -3,16 +3,23 @@ package com.example.workingtimewfh;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -25,6 +32,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Map;
+import java.util.zip.Inflater;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     final String PREF_NAME = "LoginPreferences";
@@ -41,13 +49,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String usern,password;
     View progressBar ;
 
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         sp = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         editor = sp.edit();
-        Log.d("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",sp.getString(KEY_DOCUMENT,"???"));
+
 
         if(!sp.getString(KEY_DOCUMENT,"???").equals("???")){
             final ProgressDialog dialog = ProgressDialog.show(this, "", "Loading. Please wait...", true);
@@ -80,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             });
         }
+
 
 
 
@@ -174,5 +184,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sp = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        editor = sp.edit();
 
+
+        if(!sp.getString(KEY_DOCUMENT,"???").equals("???")){
+
+            db.collection("user").document(sp.getString(KEY_DOCUMENT,"???")).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    Map<String, Object> a = documentSnapshot.getData();
+
+                    if(!sp.getString(KEY_USERNAME,"???").equals("???") && !sp.getString(KEY_PASSWORD,"???").equals("???") ){
+                        if("user".equals(sp.getString(KEY_STATUS,"???")) && ((String)a.get("status_on")).matches("no")) {
+                            Toast.makeText(getApplication(),"คุณไม่มีสิทธิ์เข้าใช้งาน",Toast.LENGTH_SHORT).show();
+
+                        }
+
+
+                    }
+
+
+                }
+            });
+        }
+    }
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WorkingTime@WFH</string>
+    <string name="app_name">WorkingTime</string>
     <string name="imgmain">TODO</string>
     <string name="working1">ระบบลงเวลาเข้า-ออกงาน</string>
     <string name="jiant_blue">สำหรับพนักงานร้าน Jiant Blue</string>

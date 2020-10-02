@@ -200,11 +200,13 @@ public class AddUserFragment extends Fragment  implements ViewPager.OnPageChange
                 getCurrent_position = 0;
                 stateProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.ONE);
                 ok = 1;
+                progressBar3.setVisibility(View.GONE);
             }
             if(!fg_subpage2.ValidAll(pager)){
                 getCurrent_position = 1;
                 stateProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.TWO);
                 ok = 1;
+                progressBar3.setVisibility(View.GONE);
             }
 
 
@@ -273,6 +275,7 @@ public class AddUserFragment extends Fragment  implements ViewPager.OnPageChange
 
 
                                 DataUser.put("status","user");
+                                DataUser.put("img_profile",null);
                                 db.collection("user").document(""+a.get("next_id")).set(DataUser).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {

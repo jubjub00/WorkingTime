@@ -24,10 +24,11 @@ import com.makeramen.roundedimageview.RoundedImageView;
 import java.util.List;
 
 public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderViewHolder>{
-    private List<SliderItem> sliderItems;
+    private List<Bitmap> sliderItems;
     private ViewPager2 viewPager2;
+    private sOnClicked mListener;
 
-    public SliderAdapter(List<SliderItem> sliderItems, ViewPager2 viewPager2) {
+    public SliderAdapter(List<Bitmap> sliderItems, ViewPager2 viewPager2) {
         this.sliderItems = sliderItems;
         this.viewPager2 = viewPager2;
     }
@@ -35,19 +36,17 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
     @NonNull
     @Override
     public SliderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new SliderViewHolder(
-                LayoutInflater.from(parent.getContext()).inflate(
-                        R.layout.slide_item_container,
-                        parent,
-                        false
-                )
-        );
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+        View view = layoutInflater.inflate(R.layout.slide_item_container,parent,false);
+        return new SliderViewHolder(view,mListener);
+
+
     }
 
     @Override
     public void onBindViewHolder(@NonNull SliderViewHolder holder, int position) {
 
-        holder.setImage(sliderItems.get(position));
+        holder.imageView.setImageBitmap(sliderItems.get(position));
 
     }
 
@@ -57,19 +56,34 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
         return sliderItems.size();
     }
 
-    class SliderViewHolder extends RecyclerView.ViewHolder{
+
+     public class SliderViewHolder extends RecyclerView.ViewHolder{
 
         private RoundedImageView imageView;
-        SliderViewHolder(@NonNull View itemView) {
+        SliderViewHolder(@NonNull View itemView, final sOnClicked listen) {
             super(itemView);
             imageView = itemView.findViewById(R.id.ImageSlide);
 
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listen != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            listen.Clicked(position);
+                        }
+                    }
+                }
+            });
+
         }
 
-        void setImage(SliderItem sliceItem){
-            imageView.setImageBitmap(sliceItem.getImage());
-        }
 
-
+    }
+    public interface sOnClicked{
+        void Clicked(int pos);
+    }
+    public void SetOnClickListener(sOnClicked listener){
+        this.mListener = listener;
     }
 }

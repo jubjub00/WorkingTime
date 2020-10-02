@@ -61,6 +61,7 @@ public class EditProfileFragment extends Fragment {
                                 @Override
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                                     if(((String)a.get("status")).matches("รออนุมัติ")) {
+
                                         String n = (String) documentSnapshot.get("name");
                                         String l = (String) documentSnapshot.get("lastname");
                                         ArrayList<String> tmp = new ArrayList<>();
@@ -143,7 +144,10 @@ public class EditProfileFragment extends Fragment {
                                             }
                                         });
 
-
+                                        recyclerView.setAdapter(recyclerAdapter);
+                                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                                        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getActivity(),DividerItemDecoration.VERTICAL);
+                                        recyclerView.addItemDecoration(dividerItemDecoration);
 
                                     }
                                 }

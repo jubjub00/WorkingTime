@@ -22,14 +22,16 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.workingtimewfh.ExtFunction;
 import com.example.workingtimewfh.R;
+import com.example.workingtimewfh.img_slide.FullAdapter;
 import com.example.workingtimewfh.img_slide.SliderAdapter;
-import com.example.workingtimewfh.img_slide.SliderItem;
+import com.example.workingtimewfh.ui.admin.add_user.SubPage1;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -71,6 +73,7 @@ public class HomeFragment extends Fragment {
 
 
     private ViewPager2 viewPager2;
+    List<Bitmap> sliderItems;
     List<Bitmap> BitmapImage;
 
 
@@ -249,13 +252,27 @@ public class HomeFragment extends Fragment {
                 Bitmap bp = (Bitmap) data.getExtras().get("data");
                 BitmapImage.add(bp);
 
-
-
-                List<SliderItem> sliderItems = new ArrayList<>();
+                sliderItems = new ArrayList<>();
                 for (Bitmap x: BitmapImage) {
-                    sliderItems.add(new SliderItem(x));
+                    sliderItems.add(x);
                 }
-                viewPager2.setAdapter(new SliderAdapter(sliderItems,viewPager2));
+                final SliderAdapter a = new SliderAdapter(sliderItems, viewPager2);
+
+                a.SetOnClickListener(new SliderAdapter.sOnClicked() {
+                    @Override
+                    public void Clicked(int pos) {
+
+                        DialogFragment dialogFragment = new FullAdapter(sliderItems,pos,a,BitmapImage);
+                        dialogFragment.setStyle(DialogFragment.STYLE_NORMAL,R.style.AppTheme_PopupOverlay);
+                        dialogFragment.show(getActivity().getSupportFragmentManager(),"tag");
+
+                        a.notifyDataSetChanged();
+                        viewPager2.setAdapter(a);
+                        viewPager2.setPageTransformer(new ZoomOutPageTransformer());
+                    }
+                });
+
+                viewPager2.setAdapter(a);
                 viewPager2.setPageTransformer(new ZoomOutPageTransformer());
 
             } else if (resultCode == RESULT_CANCELED) {
