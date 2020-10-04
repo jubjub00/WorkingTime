@@ -1,6 +1,7 @@
 package com.example.workingtimewfh.ui.user.workinglist.home;
 
 import android.Manifest;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +10,7 @@ import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.MediaStore;
@@ -71,7 +73,7 @@ public class HomeFragment extends Fragment {
     ProgressBar s;
     ExtFunction ext;
 
-
+    Uri uri;
     private ViewPager2 viewPager2;
     List<Bitmap> sliderItems;
     List<Bitmap> BitmapImage;
@@ -92,7 +94,13 @@ public class HomeFragment extends Fragment {
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.TITLE,"New picture");
+                values.put(MediaStore.Images.Media.DESCRIPTION,"Camera");
+                uri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,values);
                 Intent cam = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                cam.putExtra(MediaStore.EXTRA_OUTPUT,uri);
                 startActivityForResult(cam,1);
             }
         });
@@ -249,7 +257,13 @@ public class HomeFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
-                Bitmap bp = (Bitmap) data.getExtras().get("data");
+                Bitmap bp = null;
+                try {
+                    bp = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(),uri);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 BitmapImage.add(bp);
 
                 sliderItems = new ArrayList<>();

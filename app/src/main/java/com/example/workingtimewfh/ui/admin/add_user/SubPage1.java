@@ -2,9 +2,11 @@ package com.example.workingtimewfh.ui.admin.add_user;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.icu.text.DecimalFormat;
 import android.net.Uri;
 import android.os.Bundle;
@@ -72,6 +74,7 @@ public class SubPage1 extends Fragment implements DatePickerDialog.OnDateSetList
     String Value_NameTitle = null,Value_Position = null,Value_State = null,Value_Religion = null,Gender = null,state = null;
     List<Bitmap> sliderItems;
 
+    Uri uri;
 
     public static SubPage1 newInstance() {
         SubPage1 fragment = new SubPage1();
@@ -114,7 +117,13 @@ public class SubPage1 extends Fragment implements DatePickerDialog.OnDateSetList
         cam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.TITLE,"New picture");
+                values.put(MediaStore.Images.Media.DESCRIPTION,"Camera");
+                uri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,values);
                 Intent cam = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                cam.putExtra(MediaStore.EXTRA_OUTPUT,uri);
                 startActivityForResult(cam,1);
             }
         });
@@ -281,10 +290,15 @@ public class SubPage1 extends Fragment implements DatePickerDialog.OnDateSetList
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
-                Bitmap bp = (Bitmap) data.getExtras().get("data");
+                Bitmap bp = null;
+                try {
+                    bp = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(),uri);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                // Bitmap bp = (Bitmap) data.getExtras().get("data");
                 BitmapImage.add(bp);
-
-
 
                 sliderItems = new ArrayList<>();
                 for (Bitmap x: BitmapImage) {

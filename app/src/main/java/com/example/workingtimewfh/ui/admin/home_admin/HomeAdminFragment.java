@@ -1,23 +1,15 @@
 package com.example.workingtimewfh.ui.admin.home_admin;
 
 
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.SearchView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,7 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.workingtimewfh.R;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.example.workingtimewfh.ui.admin.EditReal.EditReal;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -38,12 +30,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-
-import de.hdodenhof.circleimageview.CircleImageView;
+import java.util.Map;
 
 
 public class HomeAdminFragment extends Fragment {
@@ -153,7 +141,31 @@ public class HomeAdminFragment extends Fragment {
                                 break;
                             case R.id.edit_task:
 
-                                Toast.makeText(getActivity(),"edit "+viewID +"  : "+recyclerAdapter.getItem(position).getId(),Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(getActivity(),"edit "+viewID +"  : "+recyclerAdapter.getItem(position).getId(),Toast.LENGTH_SHORT).show();
+                                db.collection("user").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                        List<DocumentSnapshot> a = queryDocumentSnapshots.getDocuments();
+                                        String id = null;
+                                        for (DocumentSnapshot x : a) {
+                                            Map<String, Object> b = x.getData();
+
+                                            if(b.get("tel") != null)
+                                                if(((String)x.get("tel")).matches(recyclerAdapter.getItem(position).getTel()))
+                                                    id = x.getId();
+                                        }
+                                        Intent intent_edit = new Intent(getActivity(), EditReal.class);
+                                        intent_edit.putExtra("id",id);
+                                        startActivity(intent_edit);
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(getActivity(),"เกิดข้อผิดพลาด",Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+
                                 break;
                             case R.id.tel_task:
 

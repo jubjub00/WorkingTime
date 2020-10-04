@@ -10,6 +10,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,6 +43,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.util.Assert;
+import com.google.firestore.v1.TargetOrBuilder;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -50,6 +52,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class HomeFragment extends Fragment {
 
@@ -76,20 +80,28 @@ public class HomeFragment extends Fragment {
     SharedPreferences.Editor EditorCountInOut,EditorCheckSameDate ;
 
 
+    private static final long START_TIME_IN_MILLIS = 60000;
+
+    private CountDownTimer mCountDownTimer;
+    private boolean mTimerRunning = false;
+    private long mTimeLeftInMillis ;
+    private long mEndTime;
+
+
 
     @SuppressLint("RestrictedApi")
     public View onCreateView(@NonNull final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         root = inflater.inflate(R.layout.fragment_home, container, false);
         ShowButton = root.findViewById(R.id.check);
-        sp = this.getActivity().getSharedPreferences("WorkingTime", Context.MODE_PRIVATE);
+        sp = this.getActivity().getSharedPreferences("WorkingTime", MODE_PRIVATE);
         editor = sp.edit();
         ext = new ExtFunction();
         String StatusWork = sp.getString("working_status", "???");
         AddingWork = root.findViewById(R.id.AddingWork);
-        CountInOut = this.getActivity().getSharedPreferences("CountInOut", Context.MODE_PRIVATE);
+        CountInOut = this.getActivity().getSharedPreferences("CountInOut", MODE_PRIVATE);
         EditorCountInOut = CountInOut.edit();
-        CheckSameDate = this.getActivity().getSharedPreferences("CheckSameDate", Context.MODE_PRIVATE);
+        CheckSameDate = this.getActivity().getSharedPreferences("CheckSameDate", MODE_PRIVATE);
         EditorCheckSameDate = CheckSameDate.edit();
 
         if(ext.GetSameDay(CheckSameDate.getString("OldDate","???"))){
@@ -111,16 +123,10 @@ public class HomeFragment extends Fragment {
             ShowButton.setBackground(getResources().getDrawable(R.drawable.inwork));
         } else {
             if (StatusWork.equals("ออกงาน")) {
-                final SharedPreferences NextEx = this.getActivity().getSharedPreferences("NextExit", Context.MODE_PRIVATE);
+                final SharedPreferences NextEx = this.getActivity().getSharedPreferences("NextExit", MODE_PRIVATE);
 
-                if(!ext.ActiveExit(NextEx.getString("TimeNext","???"))){
-                    ShowButton.setText("รอ 2 นาที");
-                    ShowButton.setEnabled(false);
 
-                }else {
-                    ShowButton.setText("ออกงาน");
-                    ShowButton.setEnabled(true);
-                }
+                ShowButton.setText("ออกงาน");
 
                 ShowButton.setBackground(getResources().getDrawable(R.drawable.outwork));
                 AddingWork.setVisibility(View.VISIBLE);
@@ -128,7 +134,7 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(getActivity(), WorkingList.class );
-                        sp = getActivity().getSharedPreferences("LoginPreferences", Context.MODE_PRIVATE);
+                        sp = getActivity().getSharedPreferences("LoginPreferences", MODE_PRIVATE);
                         String UserID = sp.getString("KeyDocument","???");
                         intent.putExtra("UserID",UserID);
                         startActivity(intent);
@@ -241,20 +247,22 @@ public class HomeFragment extends Fragment {
 
 
         Toast.makeText(getActivity(),"ตำแหน่งของคุณ : "+addr,Toast.LENGTH_LONG).show();
-        sp = this.getActivity().getSharedPreferences("WorkingTime", Context.MODE_PRIVATE);
+        sp = this.getActivity().getSharedPreferences("WorkingTime", MODE_PRIVATE);
         editor = sp.edit();
         String StatusWork = sp.getString("working_status","???");
-        final SharedPreferences NextEx = this.getActivity().getSharedPreferences("NextExit", Context.MODE_PRIVATE);
+        final SharedPreferences NextEx = this.getActivity().getSharedPreferences("NextExit", MODE_PRIVATE);
         final SharedPreferences.Editor EditorNextEx = NextEx.edit();
 
             if(StatusWork.equals("เข้างาน") || StatusWork.equals("???")){
+
+                startTimer();
 
                 AddingWork.setVisibility(View.VISIBLE);
                 AddingWork.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(getActivity(), WorkingList.class );
-                        sp = getActivity().getSharedPreferences("LoginPreferences", Context.MODE_PRIVATE);
+                        sp = getActivity().getSharedPreferences("LoginPreferences", MODE_PRIVATE);
                         String UserID = sp.getString("KeyDocument","???");
                         intent.putExtra("UserID",UserID);
                         startActivity(intent);
@@ -282,7 +290,7 @@ public class HomeFragment extends Fragment {
                 work.put("inwork",TotalDetailIn);
                 workCheck.put(workDate, work);
 
-                sp = this.getActivity().getSharedPreferences("LoginPreferences", Context.MODE_PRIVATE);
+                sp = this.getActivity().getSharedPreferences("LoginPreferences", MODE_PRIVATE);
                 db.collection("WorkingTime").document(sp.getString("KeyDocument","???")).set(workCheck,SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
 
 
@@ -293,17 +301,6 @@ public class HomeFragment extends Fragment {
                         EditorNextEx.clear();
                         EditorNextEx.putString("TimeNext",ext.GetNextExit());
                         EditorNextEx.commit();
-
-
-                        ShowButton.setText("รอ 2 นาที");
-                        ShowButton.setEnabled(false);
-                        ShowButton.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                ShowButton.setText("ออกงาน");
-                                ShowButton.setEnabled(true);
-                            }
-                        },1000*60*2);
 
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -319,14 +316,7 @@ public class HomeFragment extends Fragment {
                 ShowButton.setBackground(getResources().getDrawable(R.drawable.outwork));
             }else if(StatusWork.equals("ออกงาน")){
 
-                if(!ext.ActiveExit(NextEx.getString("TimeNext","???"))){
-                    ShowButton.setText("รอ 2 นาที");
-                    ShowButton.setEnabled(false);
-                    return;
-                }else {
-                    ShowButton.setText("ออกงาน");
-                    ShowButton.setEnabled(true);
-                }
+
 
                 AddingWork.setVisibility(View.INVISIBLE);
                 Map<String, Object> workCheck = new HashMap<>();
@@ -343,7 +333,7 @@ public class HomeFragment extends Fragment {
                 work.put("outwork",TotalDetailOut);
                 workCheck.put(workDate, work);
 
-                sp = this.getActivity().getSharedPreferences("LoginPreferences", Context.MODE_PRIVATE);
+                sp = this.getActivity().getSharedPreferences("LoginPreferences", MODE_PRIVATE);
                 db.collection("WorkingTime").document(sp.getString("KeyDocument","???")).set(workCheck, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -357,17 +347,98 @@ public class HomeFragment extends Fragment {
                     }
                 });
 
-
-
                 editor.putString("working_status","เข้างาน");
                 editor.commit();
                 ShowButton.setText("เข้างาน");
                 ShowButton.setBackground(getResources().getDrawable(R.drawable.inwork));
             }
 
+    }
+
+
+    private void startTimer() {
+        mEndTime = System.currentTimeMillis() + mTimeLeftInMillis;
+        mCountDownTimer = new CountDownTimer(mTimeLeftInMillis, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                mTimeLeftInMillis = millisUntilFinished;
+                updateCountDownText();
+            }
+            @Override
+            public void onFinish() {
+                mTimerRunning = false;
+                ShowButton.setText("ออกงาน");
+                updateButtons();
+
+            }
+        }.start();
+        mTimerRunning = true;
+        updateButtons();
+    }
+
+    private void updateCountDownText() {
+        int minutes = (int) (mTimeLeftInMillis / 1000) / 60;
+        int seconds = (int) (mTimeLeftInMillis / 1000) % 60;
+        String timeLeftFormatted = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
+        ShowButton.setText(timeLeftFormatted);
+        ShowButton.setClickable(false);
+
+    }
+    private void updateButtons() {
+        if (mTimerRunning) {
+            ShowButton.setClickable(false);
+        } else {
+
+            ShowButton.setClickable(true);
+
+            SharedPreferences a = this.getActivity().getSharedPreferences("WorkingTime", MODE_PRIVATE);
+            String StatusWork = a.getString("working_status", "null");
+            if(!StatusWork.matches("null"))
+                ShowButton.setText(StatusWork);
+            else
+                ShowButton.setText("เข้างาน");
+            mTimeLeftInMillis = START_TIME_IN_MILLIS;
 
 
 
+        }
+    }
+
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        SharedPreferences prefs = getActivity().getSharedPreferences("prefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putLong("millisLeft", mTimeLeftInMillis);
+        editor.putBoolean("timerRunning", mTimerRunning);
+        editor.putLong("endTime", mEndTime);
+        editor.apply();
+        if (mCountDownTimer != null) {
+            mCountDownTimer.cancel();
+        }
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        SharedPreferences prefs = getActivity().getSharedPreferences("prefs", MODE_PRIVATE);
+        mTimeLeftInMillis = prefs.getLong("millisLeft", START_TIME_IN_MILLIS);
+        mTimerRunning = prefs.getBoolean("timerRunning", false);
+        updateCountDownText();
+        updateButtons();
+        if (mTimerRunning) {
+            mEndTime = prefs.getLong("endTime", 0);
+            mTimeLeftInMillis = mEndTime - System.currentTimeMillis();
+            if (mTimeLeftInMillis < 0) {
+                mTimeLeftInMillis = 0;
+                mTimerRunning = false;
+                updateCountDownText();
+                updateButtons();
+            } else {
+                startTimer();
+            }
+        }
     }
 
 
@@ -391,7 +462,7 @@ public class HomeFragment extends Fragment {
     public void showName(View root){
         TextView NameLastName;
         NameLastName = root.findViewById(R.id.NameLastname);
-        sp = this.getActivity().getSharedPreferences("LoginPreferences", Context.MODE_PRIVATE);
+        sp = this.getActivity().getSharedPreferences("LoginPreferences", MODE_PRIVATE);
         String KeyDocument = sp.getString("KeyDocument","NotKey");
 
         if(!KeyDocument.equals("NotKey")){
