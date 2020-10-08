@@ -349,6 +349,13 @@ public class DetailEmployees extends AppCompatActivity {
                     if(DataToRec.size() > 0){
                         DetailEmployeesAdapter detailEmployeesAdapter= new DetailEmployeesAdapter(DataToRec);
 
+                        detailEmployeesAdapter.SetOnClickList(new DetailEmployeesAdapter.OnClicked() {
+                            @Override
+                            public void onclick(String date, String type) {
+                                Toast.makeText(getApplication(),""+date+" "+type ,Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
                         ((RecyclerView)findViewById(R.id.RecycleWorkTime)).setLayoutManager(new LinearLayoutManager(getApplication()));
                         ((RecyclerView)findViewById(R.id.RecycleWorkTime)).setAdapter(detailEmployeesAdapter);
                     }else{

@@ -16,7 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.admin.home_admin.DetailEmployees"></activity>
+        <activity android:name=".ui.admin.home_admin.Detail_working_task"></activity>
+        <activity android:name=".ui.admin.home_admin.DetailEmployees" />
         <activity
             android:name=".WorkingList"
             android:label="@string/title_activity_working_list" />
@@ -28,9 +29,9 @@
             android:name=".MenuAdmin"
             android:label="MenuAdmin"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ui.user.leave.add_leave"/>
+        <activity android:name=".ui.user.leave.add_leave" />
         <activity android:name=".ui.user.leave.view_leave" />
-        <activity android:name=".ui.admin.EditReal.EditReal"/>
+        <activity android:name=".ui.admin.EditReal.EditReal" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

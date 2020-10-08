@@ -1,10 +1,17 @@
 package com.example.workingtimewfh.ui.admin.EditReal;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -23,6 +30,8 @@ public class EditReal extends AppCompatActivity {
 
     EditAdapter  recyclerAdapter;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    ViewPager2 recyclerView;
+    String id;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -30,8 +39,26 @@ public class EditReal extends AppCompatActivity {
         setContentView(R.layout.edit_real);
 
         Intent GetId = getIntent();
-        String id = GetId.getStringExtra("id");
+        id = GetId.getStringExtra("id");
         create_top(id);
+
+        ((Button)findViewById(R.id.edit)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (recyclerView.getCurrentItem()){
+                    case 0 :
+
+                        Dialog_1();
+                        break;
+                    case 1 :
+                        break;
+                    case 2 :
+                        break;
+                    case 3 :
+                        break;
+                }
+            }
+        });
 
 
     }
@@ -147,13 +174,70 @@ public class EditReal extends AppCompatActivity {
 
                 recyclerAdapter = new EditAdapter(dataSet);
 
-                ViewPager2 recyclerView =  findViewById(R.id.HistoryEmployee);
+                recyclerView =  findViewById(R.id.HistoryEmployee);
                 recyclerView.setAdapter(recyclerAdapter);
 
             }
         });
     }
 
+    public void Dialog_1(){
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        final View view = LayoutInflater.from(this).inflate(R.layout.edit_data_personal,null);
+        db.collection("user").document(id).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Map<String, Object> data = documentSnapshot.getData();
+
+                ((EditText)view.findViewById(R.id.edit_name)).setText((String)data.get("name"));
+                ((EditText)view.findViewById(R.id.edit_lastname)).setText((String)data.get("lastname"));
+                ((EditText)view.findViewById(R.id.edit_name_eng)).setText((String)data.get("name_eng"));
+                ((EditText)view.findViewById(R.id.edit_personalID)).setText((String)data.get("lastname_eng"));
+                ((EditText)view.findViewById(R.id.edit_telephone)).setText((String)data.get("tel"));
+                ((Button)view.findViewById(R.id.edit_birthday)).setText((String)data.get("birth_day"));
+                ((EditText)view.findViewById(R.id.edit_national)).setText((String)data.get("nationality"));
+                //((Spinner)view.findViewById(R.id.edit_rel)).setText((String)data.get("race"));
+
+
+
+
+            }
+        });
+
+
+
+
+
+        /*show_person += "ชื่อภาษาอังกฤษ "+data.get("")+"\n";
+        show_person += "นามสกุลภาษาอังกฤษ "+data.get("lastname_eng")+"\n";
+        show_person += "รหัสบัตรประชาชน "+data.get("personal_id")+"\n";
+        show_person += "เบอร์โทรศัพท์ "+data.get("tel")+"\n";
+
+        show_person += "วันเกิด "+data.get("birth_day")+"\n";
+        show_person += "สัญชาติ "+data.get("nationality")+"\n";
+        show_person += "เชื้อชาติ "+data.get("race")+"\n";*/
+
+
+
+
+
+        alert.setView(view).setPositiveButton("บันทึก", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        }).setNegativeButton("ยกเลิก", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        alert.show();
+
+
+
+    }
 
 }
 
