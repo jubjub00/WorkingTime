@@ -102,23 +102,7 @@
             android:textSize="16dp"/>
 
     </TableRow>
-    <TableRow
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="16dp"
-            android:text="รหัสบัตรประชาชน" />
-        <EditText
-            android:id="@+id/edit_personalID"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:textSize="16dp"/>
-
-    </TableRow>
     <TableRow
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" >
@@ -154,23 +138,7 @@
 
 
     </TableRow>
-    <TableRow
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="16dp"
-            android:text="วันเกิด" />
-        <Button
-            android:id="@+id/edit_birthday"
-            android:layout_width="300dp"
-            android:layout_height="35dp"
-            android:layout_marginLeft="10dp"/>
-
-
-    </TableRow>
     <TableRow
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" >
@@ -242,22 +210,7 @@
 
 
     </TableRow>
-    <TableRow
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="16dp"
-            android:text="เพศ" />
-        <Spinner
-            android:id="@+id/edit_sex"
-            android:layout_width="150dp"
-            android:layout_height="35dp"
-            android:layout_marginLeft="10dp"/>
-
-    </TableRow>
     <TableRow
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" >

@@ -89,6 +89,13 @@
         <item>หย่าร้าง</item>
     </string-array>
 
+    <string-array name="type">
+
+        <item>พนักงานประจำ</item>
+        <item>พนักงานชั่วคราว</item>
+    </string-array>
+
+
     <string-array name="religion">
 
         <item>พุทธ</item>

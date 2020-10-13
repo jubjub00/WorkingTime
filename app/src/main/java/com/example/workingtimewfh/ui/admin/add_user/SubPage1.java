@@ -360,8 +360,6 @@ public class SubPage1 extends Fragment implements DatePickerDialog.OnDateSetList
                     }
                 });
 
-
-
                 viewPager2.setAdapter(a);
                 viewPager2.setPageTransformer(new ZoomOutPageTransformer());
             } catch (IOException e) {
@@ -694,7 +692,7 @@ public class SubPage1 extends Fragment implements DatePickerDialog.OnDateSetList
 
 
 
-    public class ZoomOutPageTransformer implements ViewPager2.PageTransformer {
+    public static class ZoomOutPageTransformer implements ViewPager2.PageTransformer {
         private static final float MIN_SCALE = 0.85f;
         private static final float MIN_ALPHA = 0.5f;
 

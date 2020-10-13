@@ -32,7 +32,13 @@ public class DetailEmployeesAdapter extends RecyclerView.Adapter<DetailEmployees
 
     @Override
     public void onBindViewHolder(@NonNull DetailEmployeesAdapter.ViewHolder holder, int position) {
-        holder.show.setText(dataSet.get(position));
+        if(!dataSet.get(position).matches("ไม่มีข้อมูล"))
+            holder.show.setText(dataSet.get(position));
+        else{
+            holder.show.setText("ไม่มีข้อมูล");
+            holder.viewTime.setVisibility(View.GONE);
+            holder.viewWork.setVisibility(View.GONE);
+        }
 
     }
 

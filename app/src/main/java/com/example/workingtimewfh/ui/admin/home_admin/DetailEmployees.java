@@ -311,7 +311,7 @@ public class DetailEmployees extends AppCompatActivity {
             }
         });
     }
-    public void create_recycle(final String month, final String year, String id){
+    public void create_recycle(final String month, final String year, final String id){
         db.collection("WorkingTime").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
 
 
@@ -352,7 +352,11 @@ public class DetailEmployees extends AppCompatActivity {
                         detailEmployeesAdapter.SetOnClickList(new DetailEmployeesAdapter.OnClicked() {
                             @Override
                             public void onclick(String date, String type) {
-                                Toast.makeText(getApplication(),""+date+" "+type ,Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(getApplication(),Detail_working_task.class);
+                                intent.putExtra("date",date);
+                                intent.putExtra("type",type);
+                                intent.putExtra("id",id);
+                                startActivity(intent);
                             }
                         });
 

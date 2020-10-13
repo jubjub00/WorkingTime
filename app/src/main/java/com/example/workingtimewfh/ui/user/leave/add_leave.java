@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -53,6 +54,7 @@ public class add_leave extends Fragment implements DatePickerDialog.OnDateSetLis
     int hour1,min1;
     Spinner spinner;
     View root;
+    private boolean sick = true;
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         root = inflater.inflate(R.layout.tab_add_leave, container, false);
@@ -69,6 +71,22 @@ public class add_leave extends Fragment implements DatePickerDialog.OnDateSetLis
         ((Button)root.findViewById(R.id.button4)).setOnClickListener(this);
         ((CheckBox) root.findViewById(R.id.half_day)).setOnClickListener(this);
 
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(spinner.getItemAtPosition(position).toString().matches("ลาป่วย"))
+                    sick = false;
+                else
+                    sick = true;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                spinner.setSelection(0);
+                sick = true;
+            }
+        });
+
     return  root;
 
     }
@@ -84,7 +102,10 @@ public class add_leave extends Fragment implements DatePickerDialog.OnDateSetLis
                 Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
         );
         long now = System.currentTimeMillis()-1000;
-        datePickerDialog.getDatePicker().setMinDate(now+(1000*60*60*24*3));
+        if(sick)
+            datePickerDialog.getDatePicker().setMinDate(now+(1000*60*60*24*3));
+        else
+            datePickerDialog.getDatePicker().setMinDate(now-(1000*60*60*24*20));
         datePickerDialog.show();
 
     }

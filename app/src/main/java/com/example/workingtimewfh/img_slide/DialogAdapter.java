@@ -56,7 +56,6 @@ public class DialogAdapter extends RecyclerView.Adapter<DialogAdapter.SliderView
             super(itemView);
             img = itemView.findViewById(R.id.imageView2);
 
-
         }
 
 
