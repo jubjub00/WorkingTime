@@ -43,6 +43,7 @@ public class RecyclerAdapter extends FirestoreRecyclerAdapter<UserStruct,Recycle
     @Override
     protected void onBindViewHolder(@NonNull final RecyclerAdapter.ViewHolder holder, int position, @NonNull UserStruct model) {
         holder.name.setText(model.getName() + " " + model.getLastname() + "\n" + model.getTel());
+
         if(model.getImg_profile() != null){
             StorageReference islandRef = FirebaseStorage.getInstance().getReference().child("user/"+model.getImg_profile());
             final long ONE_MEGABYTE = 1024 * 1024;

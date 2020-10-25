@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,12 +45,13 @@ public class adapterTask extends RecyclerView.Adapter<adapterTask.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final adapterTask.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final adapterTask.ViewHolder holder, final int position) {
         holder.time.setText(data.get(position).getTime());
         holder.head.setText("หัวข้อ : "+data.get(position).getHead());
         holder.locat.setText("สถานที่ : "+data.get(position).getLocation());
         holder.detail.setText("รายละเอียด : "+data.get(position).getDetail());
         holder.Button_location.setText("ตำแหน่ง : "+data.get(position).getLatitude()+","+data.get(position).getLongtitude());
+
 
     }
 
@@ -59,7 +62,7 @@ public class adapterTask extends RecyclerView.Adapter<adapterTask.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView time,head,locat,detail;
-        ViewPager2 img;
+        CardView card_v;
         Button Button_location;
         public ViewHolder(@NonNull View itemView, final OnClicked listener) {
             super(itemView);
@@ -67,7 +70,7 @@ public class adapterTask extends RecyclerView.Adapter<adapterTask.ViewHolder> {
             head = itemView.findViewById(R.id.head);
             locat = itemView.findViewById(R.id.locat);
             detail = itemView.findViewById(R.id.detail);
-            img = itemView.findViewById(R.id.img);
+            card_v = itemView.findViewById(R.id.card_v);
             Button_location = itemView.findViewById(R.id.Button_location);
 
             Button_location.setOnClickListener(new View.OnClickListener() {
@@ -81,6 +84,16 @@ public class adapterTask extends RecyclerView.Adapter<adapterTask.ViewHolder> {
                 }
             });
 
+            card_v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = getAdapterPosition();
+                    if(pos != RecyclerView.NO_POSITION && listener != null){
+                        listener.Click_card(data.get(pos).getImg());
+                    }
+                }
+            });
+
 
 
         }
@@ -88,6 +101,7 @@ public class adapterTask extends RecyclerView.Adapter<adapterTask.ViewHolder> {
 
     public interface OnClicked{
         void Clicked(double lat,double lon);
+        void Click_card(List<String> img);
     }
     public void SetOnClicked(OnClicked listener){
         this.listener = listener;

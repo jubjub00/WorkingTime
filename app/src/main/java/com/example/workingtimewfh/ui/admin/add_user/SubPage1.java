@@ -125,6 +125,7 @@ public class SubPage1 extends Fragment implements DatePickerDialog.OnDateSetList
                 Intent cam = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 cam.putExtra(MediaStore.EXTRA_OUTPUT,uri);
                 startActivityForResult(cam,1);
+
             }
         });
         gal = rootView.findViewById(R.id.addphotophone);

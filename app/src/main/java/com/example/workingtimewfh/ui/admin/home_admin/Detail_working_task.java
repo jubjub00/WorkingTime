@@ -5,39 +5,42 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.workingtimewfh.R;
 import com.example.workingtimewfh.ui.admin.home_admin.AdapterTask.TaskStruct;
+import com.example.workingtimewfh.ui.admin.home_admin.AdapterTask.adapterImage;
 import com.example.workingtimewfh.ui.admin.home_admin.AdapterTask.adapterTask;
-import com.example.workingtimewfh.ui.admin.home_admin.AdapterTask.downloadImg;
+import com.example.workingtimewfh.ui.admin.home_admin.AdapterTask.show_image222;
 import com.example.workingtimewfh.ui.admin.home_admin.AdapterTime.adapterTime;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.IntStream;
 
 public class Detail_working_task extends AppCompatActivity {
 
@@ -45,6 +48,7 @@ public class Detail_working_task extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private RecyclerView recyclerView;
     private TextView date_show;
+    StorageReference islandRef = FirebaseStorage.getInstance().getReference();
 
 
     @Override
@@ -52,7 +56,7 @@ public class Detail_working_task extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_working_task);
 
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         date = intent.getStringExtra("date");
         type = intent.getStringExtra("type");
         id = intent.getStringExtra("id");
@@ -248,24 +252,17 @@ public class Detail_working_task extends AppCompatActivity {
 
                             Map<String, Object> each_time = (Map<String, Object>) TaskTarget.get(time);
                             ArrayList y = (ArrayList) each_time.get("id_img");
-                            final ArrayList<Bitmap> img = new ArrayList<>();
+
+
+                            final ArrayList<String> img = new ArrayList<>();
                             if(y != null){
-                                for (Object yy : y){
-                                    StorageReference islandRef = FirebaseStorage.getInstance().getReference().child("task/"+yy);
-                                    final long ONE_MEGABYTE = 1024 * 1024;
-                                    islandRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                                        @Override
-                                        public void onSuccess(byte[] bytes) {
-                                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes , 0, bytes.length);
-                                            img.add(bitmap);
-                                        }
-                                    });
+                                for (final Object yy : y){
+                                    img.add(yy.toString());
 
                                 }
                             }
-
-                            show.add(new TaskStruct(time,each_time.get("head").toString(),each_time.get("location").toString(),each_time.get("detail").toString()
-                            , img ,(double)each_time.get("latitude"),(double)each_time.get("longtitude")));
+                                show.add(new TaskStruct(time,each_time.get("head").toString(),each_time.get("location").toString(),each_time.get("detail").toString()
+                                        , img ,(double)each_time.get("latitude"),(double)each_time.get("longtitude")));
 
 
                         }
@@ -287,6 +284,29 @@ public class Detail_working_task extends AppCompatActivity {
                                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                                 mapIntent.setPackage("com.google.android.apps.maps");
                                 startActivity(mapIntent);
+                            }
+
+                            @Override
+                            public void Click_card(final List<String> img) {
+
+                                if(!img.isEmpty()){
+                                    Intent intent1 = new Intent(Detail_working_task.this, show_image222.class);
+
+                                    String[] item = new String[img.size()];
+                                    for(int i=0;i<img.size();i++)
+                                        item[i] = img.get(i);
+                                    intent1.putExtra("data",item);
+                                    startActivity(intent1);
+                                    //finish();
+
+
+
+                                }else{
+                                    Toast.makeText(getApplicationContext(),"ไม่มีรูปภาพ",Toast.LENGTH_LONG).show();
+                                }
+
+
+
                             }
                         });
                         recyclerView.setAdapter(adapter);
@@ -314,5 +334,16 @@ public class Detail_working_task extends AppCompatActivity {
 
         }
 
+    }
+
+    private Bitmap getBitmap(int drawableRes) {
+        Drawable drawable = getResources().getDrawable(drawableRes);
+        Canvas canvas = new Canvas();
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        canvas.setBitmap(bitmap);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
     }
 }

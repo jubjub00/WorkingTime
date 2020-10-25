@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.core.app.ActivityCompat;
@@ -67,26 +68,25 @@ public class HomeFragment extends Fragment {
     Button ShowButton;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FusedLocationProviderClient fusedLocationProviderClient;
-    double latitude=0.0,longtitude=0.0;
-    String addr=null;
+    double latitude = 0.0, longtitude = 0.0;
+    String addr = null;
     ExtFunction ext;
     ProgressBar inout;
-    String workTime,workDate;
+    String workTime, workDate;
     FloatingActionButton AddingWork;
     Map<String, Object> TotalDetailIn = new HashMap<>();
     Map<String, Object> TotalDetailOut = new HashMap<>();
     boolean flag;
-    SharedPreferences CountInOut,CheckSameDate ;
-    SharedPreferences.Editor EditorCountInOut,EditorCheckSameDate ;
+    SharedPreferences CountInOut, CheckSameDate;
+    SharedPreferences.Editor EditorCountInOut, EditorCheckSameDate;
 
 
-    private static final long START_TIME_IN_MILLIS = 60000;
+    private static final long START_TIME_IN_MILLIS = 600000;
 
     private CountDownTimer mCountDownTimer;
     private boolean mTimerRunning = false;
-    private long mTimeLeftInMillis ;
+    private long mTimeLeftInMillis;
     private long mEndTime;
-
 
 
     @SuppressLint("RestrictedApi")
@@ -104,17 +104,17 @@ public class HomeFragment extends Fragment {
         CheckSameDate = this.getActivity().getSharedPreferences("CheckSameDate", MODE_PRIVATE);
         EditorCheckSameDate = CheckSameDate.edit();
 
-        if(ext.GetSameDay(CheckSameDate.getString("OldDate","???"))){
-            Log.d("",CheckSameDate.getString("OldDate","???"));
+        if (ext.GetSameDay(CheckSameDate.getString("OldDate", "???"))) {
+            Log.d("", CheckSameDate.getString("OldDate", "???"));
             flag = true;
-        }else{
-            Log.d("",CheckSameDate.getString("OldDate","???"));
+        } else {
+            Log.d("", CheckSameDate.getString("OldDate", "???"));
             EditorCountInOut.clear();
             TotalDetailOut.clear();
             TotalDetailIn.clear();
             EditorCheckSameDate.clear();
             flag = false;
-            EditorCheckSameDate.putString("OldDate",ext.GetDate());
+            EditorCheckSameDate.putString("OldDate", ext.GetDate());
             EditorCheckSameDate.commit();
         }
 
@@ -133,10 +133,10 @@ public class HomeFragment extends Fragment {
                 AddingWork.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(getActivity(), WorkingList.class );
+                        Intent intent = new Intent(getActivity(), WorkingList.class);
                         sp = getActivity().getSharedPreferences("LoginPreferences", MODE_PRIVATE);
-                        String UserID = sp.getString("KeyDocument","???");
-                        intent.putExtra("UserID",UserID);
+                        String UserID = sp.getString("KeyDocument", "???");
+                        intent.putExtra("UserID", UserID);
                         startActivity(intent);
                     }
                 });
@@ -149,18 +149,17 @@ public class HomeFragment extends Fragment {
         ShowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-                    final LocationManager manager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE );
-                    if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+                    final LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+                    if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                         Toast.makeText(getActivity(), "กรุณาเปิด GPS", Toast.LENGTH_SHORT).show();
-                    }
-                    else{
+                    } else {
                         getLocation();
 
                     }
-                }else{
-                    ActivityCompat.requestPermissions(getActivity() ,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},44);
+                } else {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
 
                 }
 
@@ -185,10 +184,10 @@ public class HomeFragment extends Fragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == 44 && grantResults.length > 0){
+        if (requestCode == 44 && grantResults.length > 0) {
             getLocation();
-        }else {
-            Toast.makeText(getActivity(),"permission denied",Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getActivity(), "permission denied", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -206,27 +205,36 @@ public class HomeFragment extends Fragment {
 
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
-        fusedLocationProviderClient.requestLocationUpdates(locationRequest,new LocationCallback(){
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
 
                 fusedLocationProviderClient.removeLocationUpdates(this);
-                if(locationResult != null && locationResult.getLocations().size() > 0){
+                if (locationResult != null && locationResult.getLocations().size() > 0) {
 
                     try {
                         int lastesLocationIndex = locationResult.getLocations().size() - 1;
                         latitude = locationResult.getLocations().get(lastesLocationIndex).getLatitude();
                         longtitude = locationResult.getLocations().get(lastesLocationIndex).getLongitude();
-                        Geocoder geocoder = new Geocoder(getActivity(),Locale.getDefault());
+                        Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
                         List<Address> addresses = null;
-                        addresses = geocoder.getFromLocation(latitude,longtitude,1);
+                        addresses = geocoder.getFromLocation(latitude, longtitude, 1);
                         addr = addresses.get(0).getAddressLine(0);
-                        if(latitude != 0.0 && longtitude != 0.0 && addr != null){
+                        if (latitude != 0.0 && longtitude != 0.0 && addr != null) {
                             WorkingTime();
                             inout.setVisibility(View.GONE);
                         }
-
 
 
                     } catch (IOException e) {

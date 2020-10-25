@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -16,7 +17,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.admin.home_admin.Detail_working_task"></activity>
+
+        <activity android:name=".ui.admin.home_admin.AdapterTask.show_image" />
+        <activity android:name=".ui.admin.home_admin.AdapterTask.show_image222" />
+        <activity android:name=".ui.admin.home_admin.Detail_working_task" />
         <activity android:name=".ui.admin.home_admin.DetailEmployees" />
         <activity
             android:name=".WorkingList"

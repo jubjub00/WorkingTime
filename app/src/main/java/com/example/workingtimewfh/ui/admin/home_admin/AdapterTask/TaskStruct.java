@@ -10,11 +10,11 @@ public class TaskStruct {
     private String head;
     private String location;
     private String detail;
-    private List<Bitmap> img;
+    private List<String> img;
     private double latitude;
     private double longtitude;
 
-    public TaskStruct(String time, String head, String location, String detail, List<Bitmap> img, double latitude, double longtitude) {
+    public TaskStruct(String time, String head, String location, String detail, List<String> img, double latitude, double longtitude) {
         this.time = time;
         this.head = head;
         this.location = location;
@@ -56,11 +56,11 @@ public class TaskStruct {
         this.detail = detail;
     }
 
-    public List<Bitmap> getImg() {
+    public List<String> getImg() {
         return img;
     }
 
-    public void setImg(List<Bitmap> img) {
+    public void setImg(List<String> img) {
         this.img = img;
     }
 
