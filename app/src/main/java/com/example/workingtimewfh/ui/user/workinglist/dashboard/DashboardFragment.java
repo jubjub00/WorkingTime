@@ -90,7 +90,8 @@ public class DashboardFragment extends Fragment {
 
                     }else w.setVisibility(View.GONE);
 
-                }
+                }else w.setVisibility(View.GONE);
+
             }
         });
 
