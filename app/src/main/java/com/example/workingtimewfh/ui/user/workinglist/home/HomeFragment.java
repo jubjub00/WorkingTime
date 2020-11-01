@@ -1,12 +1,14 @@
 package com.example.workingtimewfh.ui.user.workinglist.home;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.hardware.camera2.CameraManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.LocationManager;
@@ -62,14 +64,14 @@ import static android.app.Activity.RESULT_OK;
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
-    private Button btnCamera,saveDetail;
-    String head,location,detailwork;
+    private Button btnCamera, saveDetail;
+    String head, location, detailwork;
     StorageReference storageRef = FirebaseStorage.getInstance().getReference();
     SharedPreferences sp;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FusedLocationProviderClient fusedLocationProviderClient;
-    double latitude=0.0,longtitude=0.0;
-    String addr=null;
+    double latitude = 0.0, longtitude = 0.0;
+    String addr = null;
     ProgressBar s;
     ExtFunction ext;
 
@@ -95,30 +97,36 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                ContentValues values = new ContentValues();
-                values.put(MediaStore.Images.Media.TITLE,"New picture");
-                values.put(MediaStore.Images.Media.DESCRIPTION,"Camera");
-                uri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,values);
-                Intent cam = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                cam.putExtra(MediaStore.EXTRA_OUTPUT,uri);
-                startActivityForResult(cam,1);
+
+                if(ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+
+                    ContentValues values = new ContentValues();
+                    values.put(MediaStore.Images.Media.TITLE,"New picture");
+                    values.put(MediaStore.Images.Media.DESCRIPTION,"Camera");
+                    uri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,values);
+                    Intent cam = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    cam.putExtra(MediaStore.EXTRA_OUTPUT,uri);
+                    startActivityForResult(cam,1);
+                }else{
+                    ActivityCompat.requestPermissions(getActivity() ,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},45);
+
+                }
             }
         });
 
         saveDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-                    final LocationManager manager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE );
-                    if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+                    final LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+                    if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                         Toast.makeText(getActivity(), "กรุณาเปิด GPS", Toast.LENGTH_SHORT).show();
-                    }
-                    else{
+                    } else {
                         getlocation(root);
                     }
-                }else{
-                    ActivityCompat.requestPermissions(getActivity() ,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},44);
+                } else {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
 
                 }
 
@@ -126,11 +134,11 @@ public class HomeFragment extends Fragment {
         });
 
 
-
-
         return root;
     }
-    public void getlocation(final View root){
+
+
+    public void getlocation(final View root) {
         s = root.findViewById(R.id.WorkingDetail);
         s.setVisibility(View.VISIBLE);
         final LocationRequest locationRequest = new LocationRequest();
@@ -142,23 +150,27 @@ public class HomeFragment extends Fragment {
 
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
-        fusedLocationProviderClient.requestLocationUpdates(locationRequest,new LocationCallback(){
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            return;
+        }
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
 
                 fusedLocationProviderClient.removeLocationUpdates(this);
-                if(locationResult != null && locationResult.getLocations().size() > 0){
+                if (locationResult != null && locationResult.getLocations().size() > 0) {
 
                     try {
                         int lastesLocationIndex = locationResult.getLocations().size() - 1;
                         latitude = locationResult.getLocations().get(lastesLocationIndex).getLatitude();
                         longtitude = locationResult.getLocations().get(lastesLocationIndex).getLongitude();
-                        Geocoder geocoder = new Geocoder(getActivity(),Locale.getDefault());
+                        Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
                         List<Address> addresses = null;
-                        addresses = geocoder.getFromLocation(latitude,longtitude,1);
+                        addresses = geocoder.getFromLocation(latitude, longtitude, 1);
                         addr = addresses.get(0).getAddressLine(0);
-                        if(latitude != 0.0 && longtitude != 0.0 && addr != null){
+                        if (latitude != 0.0 && longtitude != 0.0 && addr != null) {
                             save(root);
                             s.setVisibility(View.GONE);
                         }

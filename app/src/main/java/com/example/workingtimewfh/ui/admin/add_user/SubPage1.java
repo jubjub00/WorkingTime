@@ -1,10 +1,12 @@
 package com.example.workingtimewfh.ui.admin.add_user;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.icu.text.DecimalFormat;
@@ -29,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
@@ -118,13 +121,21 @@ public class SubPage1 extends Fragment implements DatePickerDialog.OnDateSetList
             @Override
             public void onClick(View v) {
 
-                ContentValues values = new ContentValues();
-                values.put(MediaStore.Images.Media.TITLE,"New picture");
-                values.put(MediaStore.Images.Media.DESCRIPTION,"Camera");
-                uri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,values);
-                Intent cam = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                cam.putExtra(MediaStore.EXTRA_OUTPUT,uri);
-                startActivityForResult(cam,1);
+
+                if(ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+
+                    ContentValues values = new ContentValues();
+                    values.put(MediaStore.Images.Media.TITLE,"New picture");
+                    values.put(MediaStore.Images.Media.DESCRIPTION,"Camera");
+                    uri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,values);
+                    Intent cam = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    cam.putExtra(MediaStore.EXTRA_OUTPUT,uri);
+                    startActivityForResult(cam,1);
+
+                }else{
+                    ActivityCompat.requestPermissions(getActivity() ,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},45);
+
+                }
 
             }
         });
