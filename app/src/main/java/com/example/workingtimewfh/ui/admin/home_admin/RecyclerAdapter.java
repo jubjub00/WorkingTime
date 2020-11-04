@@ -1,15 +1,12 @@
 package com.example.workingtimewfh.ui.admin.home_admin;
 
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,25 +14,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.workingtimewfh.R;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageMetadata;
+import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Iterator;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RecyclerAdapter extends FirestoreRecyclerAdapter<UserStruct,RecyclerAdapter.ViewHolder> {
 
     private OnItemClickListener listener;
+    ArrayList<Uri> it = new ArrayList<>();
 
 
 
@@ -49,36 +43,7 @@ public class RecyclerAdapter extends FirestoreRecyclerAdapter<UserStruct,Recycle
     protected void onBindViewHolder(@NonNull final ViewHolder holder, int position, @NonNull UserStruct model) {
         holder.name.setText(model.getName() + " " + model.getLastname() + "\n" + model.getTel());
 
-        if(model.getImg_profile() != null){
-            if(!model.getImg_profile().isEmpty()){
-
-            StorageReference islandRef = FirebaseStorage.getInstance().getReference().child("user/"+model.getImg_profile());
-            islandRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    Picasso.get().load(uri).into(holder.imageView);
-                }
-            });
-
-
-
-
-//            final long ONE_MEGABYTE = 1024 * 1024;
-//            islandRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-//                @Override
-//                public void onSuccess(byte[] bytes) {
-//                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes , 0, bytes.length);
-//                    holder.imageView.setImageBitmap(bitmap);
-//
-//                }
-//            });
-
-
-            }
-        }
-
-
-
+        Picasso.get().load(model.getImg_profile()).placeholder(R.drawable.user2).into(holder.imageView);
 
     }
 
@@ -89,7 +54,6 @@ public class RecyclerAdapter extends FirestoreRecyclerAdapter<UserStruct,Recycle
                 LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
                 View view = layoutInflater.inflate(R.layout.front_recycle_user,parent,false);
                 return new ViewHolder(view);
-
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

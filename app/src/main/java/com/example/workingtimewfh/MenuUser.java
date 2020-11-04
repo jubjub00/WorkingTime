@@ -6,12 +6,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -39,6 +41,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -142,16 +145,13 @@ public class MenuUser extends AppCompatActivity {
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         Map<String, Object> item = documentSnapshot.getData();
                         final String tmp = FirebaseDatabase.getInstance().getReference("user").push().getKey();
-                        item.replace("img_profile",tmp);
-                        FirebaseFirestore.getInstance().collection("user").document(id).update(item).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
 
-                                StorageReference mountainsRef = storageRef.child("user/"+tmp);
+                                final StorageReference mountainsRef = storageRef.child("user/"+tmp);
                                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                                 bp.compress(Bitmap.CompressFormat.PNG, 100, baos);
                                 byte[] img = baos.toByteArray();
                                 UploadTask uploadTask = mountainsRef.putBytes(img);
+
                                 uploadTask.addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception exception) {
@@ -160,22 +160,27 @@ public class MenuUser extends AppCompatActivity {
                                 }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                     @Override
                                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                        Toast.makeText(getApplication(),"อัพเดตรูปโปรไฟล์เรียบร้อย",Toast.LENGTH_SHORT).show();
 
-                                        StorageReference desertRef = storageRef.child("user/"+Lastimg);
-                                        desertRef.delete();
+                                        mountainsRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                            @Override
+                                            public void onSuccess(Uri uri) {
+                                                Map<String, Object> i = new HashMap<>();
+                                                i.put("img_profile",uri.toString());
+                                                FirebaseFirestore.getInstance().collection("user").document(id).update(i).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        Toast.makeText(getApplication(),"อัพเดตรูปโปรไฟล์เรียบร้อย",Toast.LENGTH_SHORT).show();
+                                                        StorageReference desertRef = storageRef.child("user/"+Lastimg);
+                                                        desertRef.delete();
+                                                    }
+                                                });
+
+                                            }
+                                        });
+
+
                                     }
                                 });
-
-
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getApplication(),"เกิดข้อผิดพลาด",Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
 
                     }
                 });
