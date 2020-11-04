@@ -24,9 +24,12 @@ import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -35,25 +38,43 @@ public class RecyclerAdapter extends FirestoreRecyclerAdapter<UserStruct,Recycle
     private OnItemClickListener listener;
 
 
+
+
     public RecyclerAdapter(@NonNull FirestoreRecyclerOptions<UserStruct> options) {
         super(options);
     }
 
 
     @Override
-    protected void onBindViewHolder(@NonNull final RecyclerAdapter.ViewHolder holder, int position, @NonNull UserStruct model) {
+    protected void onBindViewHolder(@NonNull final ViewHolder holder, int position, @NonNull UserStruct model) {
         holder.name.setText(model.getName() + " " + model.getLastname() + "\n" + model.getTel());
 
         if(model.getImg_profile() != null){
+            if(!model.getImg_profile().isEmpty()){
+
             StorageReference islandRef = FirebaseStorage.getInstance().getReference().child("user/"+model.getImg_profile());
-            final long ONE_MEGABYTE = 1024 * 1024;
-            islandRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            islandRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
-                public void onSuccess(byte[] bytes) {
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes , 0, bytes.length);
-                    holder.imageView.setImageBitmap(bitmap);
+                public void onSuccess(Uri uri) {
+                    Picasso.get().load(uri).into(holder.imageView);
                 }
             });
+
+
+
+
+//            final long ONE_MEGABYTE = 1024 * 1024;
+//            islandRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+//                @Override
+//                public void onSuccess(byte[] bytes) {
+//                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes , 0, bytes.length);
+//                    holder.imageView.setImageBitmap(bitmap);
+//
+//                }
+//            });
+
+
+            }
         }
 
 
@@ -63,7 +84,7 @@ public class RecyclerAdapter extends FirestoreRecyclerAdapter<UserStruct,Recycle
 
     @NonNull
     @Override
-    public RecyclerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
                 LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
                 View view = layoutInflater.inflate(R.layout.front_recycle_user,parent,false);

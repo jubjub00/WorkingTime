@@ -29,7 +29,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
+import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,8 +53,10 @@ public class HomeAdminFragment extends Fragment {
 
         db = FirebaseFirestore.getInstance();
         queryR = db.collection("user").whereEqualTo("status","user");
-        FirestoreRecyclerOptions<UserStruct> options = new FirestoreRecyclerOptions.Builder<UserStruct>().setQuery(queryR,UserStruct.class).build();
+        final FirestoreRecyclerOptions<UserStruct> options = new FirestoreRecyclerOptions.Builder<UserStruct>().setQuery(queryR,UserStruct.class).build();
+
         recyclerAdapter = new RecyclerAdapter(options);
+
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

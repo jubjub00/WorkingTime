@@ -194,21 +194,11 @@ public class Detail_working_task extends AppCompatActivity {
                         adapter.SetOnClickItem(new adapterTime.Onclicked() {
                             @Override
                             public void Clicked(double lat, double lon) {
-
-                                Geocoder geocoder = new Geocoder(getApplication(), Locale.getDefault());
-                                List<Address> addresses = null;
-                                try {
-                                    addresses = geocoder.getFromLocation(14.1701683,101.3597539,1);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                String addr = addresses.get(0).getAddressLine(0);
-
-                                Uri gmmIntentUri = Uri.parse("geo:37.7749,-122.4194?z=10&q="+addr);
+                                String url = String.format(Locale.ENGLISH, "http://maps.google.com/maps?q=loc:%f,%f", lat,lon);
+                                Uri gmmIntentUri = Uri.parse(url);
                                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                                 mapIntent.setPackage("com.google.android.apps.maps");
                                 startActivity(mapIntent);
-
                             }
                         });
                         recyclerView.setAdapter(adapter);
@@ -271,16 +261,8 @@ public class Detail_working_task extends AppCompatActivity {
                         adapter.SetOnClicked(new adapterTask.OnClicked() {
                             @Override
                             public void Clicked(double lat, double lon) {
-                                Geocoder geocoder = new Geocoder(getApplication(), Locale.getDefault());
-                                List<Address> addresses = null;
-                                try {
-                                    addresses = geocoder.getFromLocation(lat,lon,1);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                String addr = addresses.get(0).getAddressLine(0);
-
-                                Uri gmmIntentUri = Uri.parse("geo:37.7749,-122.4194?z=10&q="+addr);
+                                String url = String.format(Locale.ENGLISH, "http://maps.google.com/maps?q=loc:%f,%f", lat,lon);
+                                Uri gmmIntentUri = Uri.parse(url);
                                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                                 mapIntent.setPackage("com.google.android.apps.maps");
                                 startActivity(mapIntent);
